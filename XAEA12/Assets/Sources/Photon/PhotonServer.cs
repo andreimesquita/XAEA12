@@ -10,7 +10,8 @@ namespace Sources.Photon
 {
     public class PhotonServer : IConnectionCallbacks, ILobbyCallbacks, IInRoomCallbacks, IMatchmakingCallbacks, IDisposable, IOnEventCallback
     {
-        
+        private readonly Dictionary<int, Action<EventData>> _onEventReceive = new Dictionary<int, Action<EventData>>();
+            
         private readonly GameEventHelper _eventHelper;
         
         private const int MaxPlayersPerRoom = 4;
@@ -23,6 +24,16 @@ namespace Sources.Photon
         {
             _eventHelper = new GameEventHelper();
             PhotonNetwork.AddCallbackTarget(this);
+            
+            _onEventReceive.Add((int) EVENT_CODES.SET_COLOR, OnReceiveColorSetEvent);
+            _onEventReceive.Add((int) EVENT_CODES.PLAYER_READY, OnReceivePlayerReadyEvent);
+            _onEventReceive.Add((int) EVENT_CODES.PRESS_BUTTON, OnReceiveButtonPressEvent);
+            _onEventReceive.Add((int) EVENT_CODES.PLAYER_JOINED, OnReceiveColorSetEvent);
+            _onEventReceive.Add((int) EVENT_CODES.ROOM_IS_FILLED, OnReceiveRoomIsFilledEvent);
+            _onEventReceive.Add((int) EVENT_CODES.ALL_PLAYERS_READY, OnReceiveAllPlayersReadyEvent);
+            _onEventReceive.Add((int) EVENT_CODES.GAME_STARTED, OnReceiveGameStartedEvent);
+            _onEventReceive.Add((int) EVENT_CODES.TURN_STARTED, OnReceiveTurnStartedEvent);
+            _onEventReceive.Add((int) EVENT_CODES.TURN_FINISHED, OnReceiveTurnFinishedEvent);
         }
 
         public void Dispose()
@@ -60,70 +71,40 @@ namespace Sources.Photon
             if (_eventHelper.GetEventByCode(photonEvent.Code) != EVENT_CODES.INVALID)
             {
                 Debug.Log($"Received Event: {_eventHelper.GetEventByCode(photonEvent.Code)}, {photonEvent.CustomData}");
-                switch (@_eventHelper.GetEventByCode(photonEvent.Code))
+                
+                if (_onEventReceive.TryGetValue(55, out Action<EventData> callback))
                 {
-                    case EVENT_CODES.INVALID:
-                        break;
-                    case EVENT_CODES.SET_COLOR:
-                        OnReceiveColorSetEvent(photonEvent);
-                        break;
-                    case EVENT_CODES.PLAYER_READY:
-                        OnReceiveColorSetEvent(photonEvent);
-                        break;
-                    case EVENT_CODES.PRESS_BUTTON:
-                        OnReceiveButtonPressEvent(photonEvent);
-                        break;
-                    case EVENT_CODES.PLAYER_JOINED:
-                        OnReceivePlayerJoinedEvent();
-                        break;
-                    case EVENT_CODES.ROOM_IS_FILLED:
-                        OnReceiveRoomIsFilledEvent();
-                        break;
-                    case EVENT_CODES.ALL_PLAYERS_READY:
-                        OnReceiveAllPlayersReadyEvent();
-                        break;
-                    case EVENT_CODES.GAME_STARTED:
-                        OnReceiveGameStartedEvent();
-                        break;
-                    case EVENT_CODES.TURN_STARTED:
-                        OnReceiveTurnStartedEvent();
-                        break;
-                    case EVENT_CODES.TURN_FINISHED:
-                        OnReceiveTurnFinishedEvent();
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException();
+                    callback(photonEvent);
                 }
             }
         }
 
-        private void OnReceivePlayerJoinedEvent()
+        private void OnReceivePlayerJoinedEvent(EventData photonEvent)
         {
             throw new NotImplementedException();
         }
 
-        private void OnReceiveTurnFinishedEvent()
+        private void OnReceiveTurnFinishedEvent(EventData photonEvent)
         {
             // Start turn
         }
 
-        private void OnReceiveTurnStartedEvent()
+        private void OnReceiveTurnStartedEvent(EventData photonEvent)
         {
             // Start turn
         }
 
-        private void OnReceiveGameStartedEvent()
+        private void OnReceiveGameStartedEvent(EventData photonEvent)
         {
             // Start the game
         }
 
-        private void OnReceiveAllPlayersReadyEvent()
+        private void OnReceiveAllPlayersReadyEvent(EventData photonEvent)
         {
             // Start Game
         }
-
-
-        private void OnReceiveRoomIsFilledEvent()
+        
+        private void OnReceiveRoomIsFilledEvent(EventData photonEvent)
         {
             // Enable UI
         }
@@ -131,7 +112,14 @@ namespace Sources.Photon
         private void OnReceiveButtonPressEvent(EventData photonEvent)
         {
             int actorNumber = PhotonNetwork.CurrentRoom.GetPlayer(photonEvent.Sender).ActorNumber;
-            throw new NotImplementedException();
+            _photonGameState.ButtonPress(actorNumber);
+
+            if (_photonGameState.ActionComplete())
+            {
+                // if isValidPattern
+                
+                // else
+            }
         }
 
         public void OnReceiveColorSetEvent(EventData photonEvent)
@@ -178,6 +166,7 @@ namespace Sources.Photon
         
         public void SendTurnStartedEvent()
         {
+            _photonGameState.ResetTurn();
             SendEventToServer(EVENT_CODES.TURN_STARTED, null);
         }
         
