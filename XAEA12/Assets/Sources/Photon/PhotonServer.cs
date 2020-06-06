@@ -119,7 +119,7 @@ namespace Sources.Photon
 
         private void OnReceiveButtonPressEvent(EventData photonEvent)
         {
-            int actorNumber = PhotonNetwork.CurrentRoom.GetPlayer(photonEvent.Sender).ActorNumber;
+            int actorNumber = photonEvent.Sender;
             _photonGameState.ButtonPress(actorNumber);
 
             if (_photonGameState.ActionComplete())
@@ -138,13 +138,12 @@ namespace Sources.Photon
 
         public void OnReceiveColorSetEvent(EventData photonEvent)
         {
-            _photonGameState.SetPlayerColor(PhotonNetwork.CurrentRoom.GetPlayer(photonEvent.Sender).ActorNumber, 
-                (byte) photonEvent.CustomData);
+            _photonGameState.SetPlayerColor(photonEvent.Sender, (byte) photonEvent.CustomData);
         }
         
         public void OnReceivePlayerReadyEvent(EventData photonEvent)
         {
-            _photonGameState.SetPlayerReady(PhotonNetwork.CurrentRoom.GetPlayer(photonEvent.Sender).ActorNumber);
+            _photonGameState.SetPlayerReady(photonEvent.Sender);
 
             // Send global event if everyone ready
             if (_photonGameState.AllPlayersReady())
