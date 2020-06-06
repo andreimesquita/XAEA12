@@ -20,6 +20,8 @@ namespace Sources.Photon
         private PhotonGameState _photonGameState;
 
         private bool _isMaster;
+
+        private byte _myColor;
         
         public PhotonServer()
         {
@@ -49,10 +51,10 @@ namespace Sources.Photon
             SendEvent(eventCode, content, raiseEventOptions);
         }
 
-        public void SendEventToPlayer(EVENT_CODES eventCode, Object content)
+        public void SendEventToPlayer(EVENT_CODES eventCode, Object content, int playerActor)
         {
-            // how to send only to player?
-            SendEvent(eventCode, content, RaiseEventOptions.Default);
+            RaiseEventOptions raiseEventOptions = new RaiseEventOptions { TargetActors = new[] {playerActor}};
+            SendEvent(eventCode, content, raiseEventOptions);
         }
         
         public void SendEventToServer(EVENT_CODES eventCode, Object content) 
@@ -138,7 +140,7 @@ namespace Sources.Photon
 
         public void OnReceiveColorSetEvent(EventData photonEvent)
         {
-            _photonGameState.SetPlayerColor(photonEvent.Sender, (byte) photonEvent.CustomData);
+            _myColor = (byte) photonEvent.CustomData;
         }
         
         public void OnReceivePlayerReadyEvent(EventData photonEvent)
@@ -153,9 +155,9 @@ namespace Sources.Photon
             }
         }
 
-        public void SendSetColorEvent(byte color)
+        public void SendSetColorEvent(int actorId, byte color)
         {
-            SendEventToMaster(EVENT_CODES.SET_COLOR, color); 
+            SendEventToPlayer(EVENT_CODES.SET_COLOR, color, actorId); 
         } 
         
         public void SendPlayerReadyEvent()
@@ -165,7 +167,7 @@ namespace Sources.Photon
         
         public void SendButtonPressEvent()
         {
-            SendEventToMaster(EVENT_CODES.PRESS_BUTTON, null);
+            SendEventToMaster(EVENT_CODES.PRESS_BUTTON, null); 
         }
         
         public void SendRoomIsFilledEvent()
@@ -228,11 +230,17 @@ namespace Sources.Photon
         public void OnPlayerEnteredRoom(Player newPlayer)
         {
             Debug.Log($"Player {newPlayer.ActorNumber} joined the room.");
-            
-            _photonGameState.AddPlayer(newPlayer);
-            if (_photonGameState.RoomIsFilled())
+
+            if (IsMasterClient())
             {
-                SendRoomIsFilledEvent();
+                byte playerColor = _photonGameState.AddPlayer(newPlayer);
+                Debug.Log($"Player {newPlayer.ActorNumber} color is {playerColor}");
+                SendSetColorEvent( newPlayer.ActorNumber, playerColor);
+                
+                if (_photonGameState.RoomIsFilled())
+                {
+                    SendRoomIsFilledEvent();
+                }
             }
         }
 
@@ -319,10 +327,10 @@ namespace Sources.Photon
             {
                 Debug.Log("Starting game state..");
                 _photonGameState = new PhotonGameState();
-                _photonGameState.AddPlayer(PhotonNetwork.LocalPlayer);
+                _myColor = _photonGameState.AddPlayer(PhotonNetwork.LocalPlayer);
+                
+                Debug.Log($"My color is {_myColor}");
             }
-            
-            SendSetColorEvent(GameEventHelper.Red);
         }
 
         public void OnJoinRoomFailed(short returnCode, string message)

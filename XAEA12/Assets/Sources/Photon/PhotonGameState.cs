@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Photon.Realtime;
 
 namespace Sources.Photon
@@ -9,6 +10,8 @@ namespace Sources.Photon
         public Dictionary<int, bool> _playersReadyById;
         public Dictionary<int, byte> _colorsByPlayerId;
 
+        public List<byte> _availableColors;
+
         private int _currentSelection = 0000000000000000;
         private int _currentSelectionIndex;
         
@@ -17,6 +20,13 @@ namespace Sources.Photon
             _playersById = new Dictionary<int, Player>();
             _colorsByPlayerId = new Dictionary<int, byte>();
             _playersReadyById = new Dictionary<int, bool>();
+            
+            _availableColors = new List<byte>();
+
+            _availableColors.Add(GameEventHelper.Blue);
+            _availableColors.Add(GameEventHelper.Red);
+            _availableColors.Add(GameEventHelper.Green);
+            _availableColors.Add(GameEventHelper.Yellow);
         }
 
         public void ResetTurn()
@@ -39,9 +49,20 @@ namespace Sources.Photon
             return _currentSelectionIndex == 3;
         }
 
-        public void AddPlayer(Player player)
+        public byte AddPlayer(Player player)
         {
+            byte playerColor = GetUnusedColor();
+            
             _playersById.Add(player.ActorNumber, player);
+            _colorsByPlayerId.Add(player.ActorNumber, playerColor);
+            return playerColor;
+        }
+
+        public byte GetUnusedColor()
+        {
+            byte color = _availableColors.First();
+            _availableColors.Remove(color);
+            return color;
         }
         
         public bool RoomIsFilled()
@@ -64,11 +85,6 @@ namespace Sources.Photon
                 }
             }
             return true;
-        }
-
-        public void SetPlayerColor(int actorNumber, byte color)
-        { 
-            _colorsByPlayerId.Add(actorNumber, color);
         }
     }
 }
