@@ -24,6 +24,7 @@
       <Path>.vscode</Path>
       <Path>Library</Path>
       <Path>Logs</Path>
+      <Path>Sources</Path>
       <Path>Temp</Path>
       <Path>obj</Path>
     </explicitExcludes>

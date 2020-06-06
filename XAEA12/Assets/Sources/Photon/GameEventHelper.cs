@@ -34,7 +34,6 @@ namespace Sources.Photon
     public enum EVENT_CODES
     {
         INVALID,
-        SET_COLOR
-        
+        SET_COLOR        
     }
 }
