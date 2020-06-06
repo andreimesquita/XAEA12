@@ -7,15 +7,18 @@ using UnityEngine;
 
 namespace Sources.Photon
 {
-    public class PhotonLauncher : IConnectionCallbacks, ILobbyCallbacks, IInRoomCallbacks, IMatchmakingCallbacks, IDisposable, IOnEventCallback
+    public class PhotonServer : IConnectionCallbacks, ILobbyCallbacks, IInRoomCallbacks, IMatchmakingCallbacks, IDisposable, IOnEventCallback
     {
         private const int MaxPlayersPerRoom = 4;
-        private String playerName;
+        private PhotonGameState _photonGameState;
+        private readonly GameEventHelper _eventHelper;
+        private bool isMaster;
+        
  
     
-        public PhotonLauncher(string userName)
+        public PhotonServer()
         {
-            playerName = userName;
+            _eventHelper = new GameEventHelper();
             PhotonNetwork.AddCallbackTarget(this);
         }
 
@@ -24,23 +27,43 @@ namespace Sources.Photon
             PhotonNetwork.RemoveCallbackTarget(this);
         }
 
-        public void Connect()
+        public void SendEvent(EVENT_CODES eventCode, String content)
         {
-            ConnectToPhoton();
+            Debug.Log($"Sending Event: {_eventHelper.GetEventCode(eventCode)}, {content}");
+            PhotonNetwork.RaiseEvent(
+                _eventHelper.GetEventCode(eventCode), 
+                content, 
+                RaiseEventOptions.Default,
+                SendOptions.SendReliable);
         }
-
-        public void ConnectToPhoton()
-        { 
+        
+        public void OnEvent(EventData photonEvent)
+        {
+            if (_eventHelper.GetEventByCode(photonEvent.Code) != EVENT_CODES.INVALID)
+            {
+                Debug.Log($"Received Event: {photonEvent}, {photonEvent.CustomData}");
+            }
+        }
+        
+        public void JoinGame(string userName)
+        {
             PhotonNetwork.AuthValues = new AuthenticationValues
             {
                 AuthType = CustomAuthenticationType.Custom,
-                UserId = playerName
+                UserId = userName
             };
-        
-            Debug.Log($"Connecting to Photon as {playerName}");
-            PhotonNetwork.ConnectUsingSettings();
+            
+            if (PhotonNetwork.IsConnectedAndReady)
+            {
+                PhotonNetwork.JoinRandomRoom();
+            }
+            else
+            {
+                Debug.Log($"Connecting to Photon as {userName}");
+                PhotonNetwork.ConnectUsingSettings();
+            }
         }
-        
+
         public void JoinRandomRoom()
         {
             MatchmakingMode matchmakingMode = MatchmakingMode.FillRoom;
@@ -52,16 +75,39 @@ namespace Sources.Photon
         {
             PhotonNetwork.CreateRoom("test-room", new RoomOptions { MaxPlayers = MaxPlayersPerRoom });
         }
+        
+        public void OnPlayerEnteredRoom(Player newPlayer)
+        {
+            Debug.Log($"Player {newPlayer.NickName} joined the room.");
+            _photonGameState.AddPlayer(newPlayer);
+        }
+
+        public void OnPlayerLeftRoom(Player otherPlayer)
+        {
+            Debug.Log("Player has left the room, game must be ended.");
+        }
+        
 
         public void OnConnected()
         {
-            Debug.Log("Connected to Photon.");
+            //Debug.Log("Connected to Photon.");
+        }
+
+        private bool IsMasterClient()
+        {
+            return PhotonNetwork.IsMasterClient;
         }
 
         public void OnConnectedToMaster()
         {
             Debug.Log("Connected to Master.");
             PhotonNetwork.JoinLobby();
+
+            if (IsMasterClient())
+            {
+                _photonGameState = new PhotonGameState();
+                _photonGameState.AddPlayer(PhotonNetwork.LocalPlayer);
+            }
         }
 
         public void OnDisconnected(DisconnectCause cause)
@@ -82,6 +128,7 @@ namespace Sources.Photon
         public void OnJoinedLobby()
         {
             Debug.Log("Joined Lobby.");
+            JoinRandomRoom();
         }
 
         public void OnLeftLobby()
@@ -91,9 +138,8 @@ namespace Sources.Photon
 
         public void OnRoomListUpdate(List<RoomInfo> roomList)
         {
-            Debug.Log("Room List updated, connecting to Random Room.");
+            //Debug.Log("Room List updated, connecting to Random Room.");
             //Debug.Log($"Available rooms: {roomList.ToString()}");
-            JoinRandomRoom();
         }
         
         public void OnCustomAuthenticationFailed(string debugMessage)
@@ -106,17 +152,6 @@ namespace Sources.Photon
             throw new System.NotImplementedException();
         }
 
-        public void OnPlayerEnteredRoom(Player newPlayer)
-        {
-            Debug.Log($"Player {newPlayer.NickName} joined the room.");
-            throw new System.NotImplementedException();
-        }
-
-        public void OnPlayerLeftRoom(Player otherPlayer)
-        {
-            Debug.Log("Player has left the room, game must be ended.");
-        }
-        
         public void OnCreatedRoom()
         {
             //Debug.Log("Created Room successfully");
@@ -130,9 +165,7 @@ namespace Sources.Photon
         public void OnJoinedRoom()
         {
             Debug.Log("Joined room :D");
-            
-            // set color and format
-            
+            SendEvent(EVENT_CODES.SET_COLOR, "red");
         }
 
         public void OnJoinRoomFailed(short returnCode, string message)
@@ -151,11 +184,6 @@ namespace Sources.Photon
             Debug.Log("Left room :(");
         }
 
-        public void OnEvent(EventData photonEvent)
-        {
-            Debug.Log($"Received Event: {photonEvent}");
-        }
-        
         public void OnRoomPropertiesUpdate(Hashtable propertiesThatChanged)
         {
             throw new System.NotImplementedException();
