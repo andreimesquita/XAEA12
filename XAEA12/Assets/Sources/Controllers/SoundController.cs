@@ -1,9 +1,9 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 public class SoundController : MonoBehaviour
 {
     [SerializeField] private AudioSource _bgMusicSource = null;
-    [SerializeField] private AudioSource _sfxSource = null;
 
     public static SoundController Instance
     {
@@ -13,10 +13,20 @@ public class SoundController : MonoBehaviour
 
     private static SoundController _instance = null;
 
+    private void Awake()
+    {
+        _instance = this;
+        DontDestroyOnLoad(this);
+    }
+
     public void PlayMusic(AudioClip clip)
     {
         _bgMusicSource.Stop();
-        _bgMusicSource.clip = clip;
-        _bgMusicSource.Play();
+
+        if (clip != null)
+        {
+            _bgMusicSource.clip = clip;
+            _bgMusicSource.Play();
+        }
     }
 }
