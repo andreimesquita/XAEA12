@@ -28,6 +28,7 @@ namespace Sources.Photon
             addEventToMap(EVENT_CODES.GAME_STARTED, 8);
             addEventToMap(EVENT_CODES.TURN_STARTED, 9);
             addEventToMap(EVENT_CODES.TURN_FINISHED, 10);
+            addEventToMap(EVENT_CODES.TURN_RESET, 11);
         }
 
         public void addEventToMap(EVENT_CODES eventType, byte code)
@@ -49,7 +50,6 @@ namespace Sources.Photon
         {
             return _eventTypeDic[eventType];
         }
-
     }
 
     public enum EVENT_CODES
@@ -63,6 +63,7 @@ namespace Sources.Photon
         ALL_PLAYERS_READY,
         GAME_STARTED,
         TURN_STARTED,
-        TURN_FINISHED
+        TURN_FINISHED,
+        TURN_RESET
     }
 }

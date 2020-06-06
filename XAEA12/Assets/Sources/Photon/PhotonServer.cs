@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using ExitGames.Client.Photon;
 using Photon.Pun;
 using Photon.Realtime;
+using Sources.Common.Pattern;
 using UnityEngine;
 using Object = System.Object;
 
@@ -19,6 +20,8 @@ namespace Sources.Photon
         private PhotonGameState _photonGameState;
 
         private bool _isMaster;
+
+        private byte _myColor;
         
         public PhotonServer()
         {
@@ -34,6 +37,7 @@ namespace Sources.Photon
             _onEventReceive.Add((int) EVENT_CODES.GAME_STARTED, OnReceiveGameStartedEvent);
             _onEventReceive.Add((int) EVENT_CODES.TURN_STARTED, OnReceiveTurnStartedEvent);
             _onEventReceive.Add((int) EVENT_CODES.TURN_FINISHED, OnReceiveTurnFinishedEvent);
+            _onEventReceive.Add((int) EVENT_CODES.TURN_RESET, OnReceiveTurnResetEvent);
         }
 
         public void Dispose()
@@ -47,10 +51,10 @@ namespace Sources.Photon
             SendEvent(eventCode, content, raiseEventOptions);
         }
 
-        public void SendEventToPlayer(EVENT_CODES eventCode, Object content)
+        public void SendEventToPlayer(EVENT_CODES eventCode, Object content, int playerActor)
         {
-            // how to send only to player?
-            SendEvent(eventCode, content, RaiseEventOptions.Default);
+            RaiseEventOptions raiseEventOptions = new RaiseEventOptions { TargetActors = new[] {playerActor}};
+            SendEvent(eventCode, content, raiseEventOptions);
         }
         
         public void SendEventToServer(EVENT_CODES eventCode, Object content) 
@@ -86,7 +90,8 @@ namespace Sources.Photon
 
         private void OnReceiveTurnFinishedEvent(EventData photonEvent)
         {
-            // Start turn
+            // Receive action
+            int action = (int) photonEvent.CustomData;
         }
 
         private void OnReceiveTurnStartedEvent(EventData photonEvent)
@@ -106,42 +111,53 @@ namespace Sources.Photon
         
         private void OnReceiveRoomIsFilledEvent(EventData photonEvent)
         {
-            // Enable UI
+            // Enable UI to set ready
+        }
+        
+        private void OnReceiveTurnResetEvent(EventData photonEvent)
+        {
+            // Enable UI to set ready
         }
 
         private void OnReceiveButtonPressEvent(EventData photonEvent)
         {
-            int actorNumber = PhotonNetwork.CurrentRoom.GetPlayer(photonEvent.Sender).ActorNumber;
+            int actorNumber = photonEvent.Sender;
             _photonGameState.ButtonPress(actorNumber);
 
             if (_photonGameState.ActionComplete())
             {
-                // if isValidPattern
-                
-                // else
+                int action = _photonGameState.CurrentSelection;
+                if (PatternMapperSO.Instance.IsValidPattern(action))
+                {
+                    SendTurnFinishedEvent(action);
+                }
+                else
+                {
+                    SendTurnResetEvent();
+                }
             }
         }
 
         public void OnReceiveColorSetEvent(EventData photonEvent)
         {
-            _photonGameState.SetPlayerColor(PhotonNetwork.CurrentRoom.GetPlayer(photonEvent.Sender).ActorNumber, 
-                (byte) photonEvent.CustomData);
+            _myColor = (byte) photonEvent.CustomData;
         }
         
         public void OnReceivePlayerReadyEvent(EventData photonEvent)
         {
-            _photonGameState.SetPlayerReady(PhotonNetwork.CurrentRoom.GetPlayer(photonEvent.Sender).ActorNumber);
+            _photonGameState.SetPlayerReady(photonEvent.Sender);
 
             // Send global event if everyone ready
             if (_photonGameState.AllPlayersReady())
             {
                 SendAllPlayersReadyEvent();
+                SendTurnStartedEvent(); 
             }
         }
 
-        public void SendSetColorEvent(byte color)
+        public void SendSetColorEvent(int actorId, byte color)
         {
-            SendEventToMaster(EVENT_CODES.SET_COLOR, color);
+            SendEventToPlayer(EVENT_CODES.SET_COLOR, color, actorId); 
         } 
         
         public void SendPlayerReadyEvent()
@@ -151,7 +167,7 @@ namespace Sources.Photon
         
         public void SendButtonPressEvent()
         {
-            SendEventToMaster(EVENT_CODES.PRESS_BUTTON, null);
+            SendEventToMaster(EVENT_CODES.PRESS_BUTTON, null); 
         }
         
         public void SendRoomIsFilledEvent()
@@ -170,9 +186,14 @@ namespace Sources.Photon
             SendEventToServer(EVENT_CODES.TURN_STARTED, null);
         }
         
-        public void SendTurnFinishedEvent()
+        public void SendTurnFinishedEvent(int action)
         {
-            SendEventToServer(EVENT_CODES.TURN_FINISHED, null);
+            SendEventToServer(EVENT_CODES.TURN_FINISHED, action);
+        }
+        
+        public void SendTurnResetEvent()
+        {
+            SendEventToServer(EVENT_CODES.TURN_RESET, null);
         }
 
         public void JoinGame(string userName)
@@ -209,11 +230,17 @@ namespace Sources.Photon
         public void OnPlayerEnteredRoom(Player newPlayer)
         {
             Debug.Log($"Player {newPlayer.ActorNumber} joined the room.");
-            
-            _photonGameState.AddPlayer(newPlayer);
-            if (_photonGameState.RoomIsFilled())
+
+            if (IsMasterClient())
             {
-                SendRoomIsFilledEvent();
+                byte playerColor = _photonGameState.AddPlayer(newPlayer);
+                Debug.Log($"Player {newPlayer.ActorNumber} color is {playerColor}");
+                SendSetColorEvent( newPlayer.ActorNumber, playerColor);
+                
+                if (_photonGameState.RoomIsFilled())
+                {
+                    SendRoomIsFilledEvent();
+                }
             }
         }
 
@@ -300,10 +327,10 @@ namespace Sources.Photon
             {
                 Debug.Log("Starting game state..");
                 _photonGameState = new PhotonGameState();
-                _photonGameState.AddPlayer(PhotonNetwork.LocalPlayer);
+                _myColor = _photonGameState.AddPlayer(PhotonNetwork.LocalPlayer);
+                
+                Debug.Log($"My color is {_myColor}");
             }
-            
-            SendSetColorEvent(GameEventHelper.Red);
         }
 
         public void OnJoinRoomFailed(short returnCode, string message)
