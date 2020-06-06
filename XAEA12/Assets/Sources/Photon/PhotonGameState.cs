@@ -32,6 +32,8 @@ namespace Sources.Photon
             _currentSelectionIndex++;
         }
 
+        public int CurrentSelection => _currentSelection;
+
         public bool ActionComplete()
         {
             return _currentSelectionIndex == 3;

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using ExitGames.Client.Photon;
 using Photon.Pun;
 using Photon.Realtime;
+using Sources.Common.Pattern;
 using UnityEngine;
 using Object = System.Object;
 
@@ -34,6 +35,7 @@ namespace Sources.Photon
             _onEventReceive.Add((int) EVENT_CODES.GAME_STARTED, OnReceiveGameStartedEvent);
             _onEventReceive.Add((int) EVENT_CODES.TURN_STARTED, OnReceiveTurnStartedEvent);
             _onEventReceive.Add((int) EVENT_CODES.TURN_FINISHED, OnReceiveTurnFinishedEvent);
+            _onEventReceive.Add((int) EVENT_CODES.TURN_RESET, OnReceiveTurnResetEvent);
         }
 
         public void Dispose()
@@ -86,7 +88,8 @@ namespace Sources.Photon
 
         private void OnReceiveTurnFinishedEvent(EventData photonEvent)
         {
-            // Start turn
+            // Receive action
+            int action = (int) photonEvent.CustomData;
         }
 
         private void OnReceiveTurnStartedEvent(EventData photonEvent)
@@ -106,7 +109,12 @@ namespace Sources.Photon
         
         private void OnReceiveRoomIsFilledEvent(EventData photonEvent)
         {
-            // Enable UI
+            // Enable UI to set ready
+        }
+        
+        private void OnReceiveTurnResetEvent(EventData photonEvent)
+        {
+            // Enable UI to set ready
         }
 
         private void OnReceiveButtonPressEvent(EventData photonEvent)
@@ -116,9 +124,15 @@ namespace Sources.Photon
 
             if (_photonGameState.ActionComplete())
             {
-                // if isValidPattern
-                
-                // else
+                int action = _photonGameState.CurrentSelection;
+                if (PatternMapperSO.Instance.IsValidPattern(action))
+                {
+                    SendTurnFinishedEvent(action);
+                }
+                else
+                {
+                    SendTurnResetEvent();
+                }
             }
         }
 
@@ -136,12 +150,13 @@ namespace Sources.Photon
             if (_photonGameState.AllPlayersReady())
             {
                 SendAllPlayersReadyEvent();
+                SendTurnStartedEvent(); 
             }
         }
 
         public void SendSetColorEvent(byte color)
         {
-            SendEventToMaster(EVENT_CODES.SET_COLOR, color);
+            SendEventToMaster(EVENT_CODES.SET_COLOR, color); 
         } 
         
         public void SendPlayerReadyEvent()
@@ -170,9 +185,14 @@ namespace Sources.Photon
             SendEventToServer(EVENT_CODES.TURN_STARTED, null);
         }
         
-        public void SendTurnFinishedEvent()
+        public void SendTurnFinishedEvent(int action)
         {
-            SendEventToServer(EVENT_CODES.TURN_FINISHED, null);
+            SendEventToServer(EVENT_CODES.TURN_FINISHED, action);
+        }
+        
+        public void SendTurnResetEvent()
+        {
+            SendEventToServer(EVENT_CODES.TURN_RESET, null);
         }
 
         public void JoinGame(string userName)
