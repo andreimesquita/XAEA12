@@ -488,7 +488,9 @@
         </e>
         <e p="Sources" t="Include">
           <e p="Photon" t="Include">
-            <e p="PhotonLauncher.cs" t="Include" />
+            <e p="GameEventHelper.cs" t="Include" />
+            <e p="PhotonGameState.cs" t="Include" />
+            <e p="PhotonServer.cs" t="Include" />
             <e p="PhotonTest.cs" t="Include" />
           </e>
         </e>

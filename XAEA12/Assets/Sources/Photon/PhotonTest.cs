@@ -10,8 +10,8 @@ namespace Sources.Photon
         
         private void Start()
         {
-            PhotonLauncher launcher = new PhotonLauncher(_userName);
-            launcher.Connect();
+            PhotonServer launcher = new PhotonServer();
+            launcher.JoinGame(_userName);
         }
     }
 }
