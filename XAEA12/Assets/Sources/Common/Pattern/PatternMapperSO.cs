@@ -11,13 +11,12 @@ namespace Sources.Common.Pattern
         private class PatternEntry
         {
             public string AnimationTrigger = default;
-            //TODO(andrei) create a custom drawer for this
-            public int Pattern = default;
+            public string Pattern = default;
         }
 
         private static PatternMapperSO _instance;
         public static PatternMapperSO Instance => _instance;
-
+        
         [SerializeField]
         private PatternEntry[] _patterns = default;
 
@@ -38,7 +37,8 @@ namespace Sources.Common.Pattern
             {
                 foreach (PatternEntry patternEntry in _patterns)
                 {
-                    _triggerByPattern[patternEntry.Pattern] = patternEntry.AnimationTrigger;
+                    int bitPattern = Convert.ToInt32(patternEntry.Pattern, 2);
+                    _triggerByPattern[bitPattern] = patternEntry.AnimationTrigger;
                 }
             }
         }
