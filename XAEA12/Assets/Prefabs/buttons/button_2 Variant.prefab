@@ -22,7 +22,7 @@ PrefabInstance:
     - target: {fileID: 8576266874592211689, guid: 45489d1c7d7deb94cbf583bddcab944e,
         type: 3}
       propertyPath: m_Name
-      value: button_2 Variant
+      value: button_2
       objectReference: {fileID: 0}
     - target: {fileID: 8576266874592211690, guid: 45489d1c7d7deb94cbf583bddcab944e,
         type: 3}
