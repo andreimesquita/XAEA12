@@ -61,7 +61,7 @@ namespace Sources.Photon
 
         public bool ActionComplete()
         {
-            return _currentPatternMaskIndex == 3;
+            return _currentPatternMaskIndex == 4;
         }
 
         public byte GetUnusedColor()
