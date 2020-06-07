@@ -4,9 +4,9 @@
     {
         // Button Colors
         public const byte Blue   = 1;
-        public const byte Green  = Blue << 1;
-        public const byte Red    = Green << 1;
-        public const byte Yellow = Red << 1;
+        public const byte Green  = 2;
+        public const byte Red    = 4;
+        public const byte Yellow = 8;
         
         public byte GetEventCode(EVENT_CODES eventType)
         {
