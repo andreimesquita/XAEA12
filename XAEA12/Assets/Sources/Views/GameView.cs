@@ -1,4 +1,6 @@
 ﻿using System.Collections;
+using Photon.Pun;
+using Sources.Common.Pattern;
 using Sources.Photon;
 using UnityEngine;
 using UnityEngine.Events;
@@ -16,15 +18,28 @@ namespace Sources.Views
         public UnityEvent _onSimulationStarted;
         [SerializeField]
         private GameObject[] _mainButtons = new GameObject[4];
-        
+
         private IEnumerator Start()
         {
             PhotonFacade photonFacade = PhotonFacade.Instance;
             PhotonFacade.Instance.OnStartGameSimulation += OnStartGameSimulation;
             PhotonFacade.Instance.OnButtonActiveStateChanged += OnButtonActiveStateChanged;
             PhotonFacade.Instance.OnTriggerAnimation += OnTriggerAnimation;
+            ActivatePlayerButton();
             yield return null;
             photonFacade.SendGameSceneLoadedEvent();
+        }
+
+        private void ActivatePlayerButton()
+        {
+            PhotonFacade photonFacade = PhotonFacade.Instance;
+            photonFacade.GameState.TryGetPlayerColor(PhotonNetwork.LocalPlayer.ActorNumber, out byte color);
+            int playerIndex = ColorPatternHelper.GetIndexByColorPattern(color);
+            for (int i = 0; i < _mainButtons.Length; i++)
+            {
+                bool isPlayerButton = (playerIndex == i);
+                _mainButtons[i].SetActive(isPlayerButton);
+            }
         }
         
         private void OnTriggerAnimation(string trigger)
