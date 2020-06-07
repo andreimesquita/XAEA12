@@ -65,6 +65,6 @@ SpriteAtlas:
   - button_3_top
   - button_2_base
   - disable_image
-  - button_1_top
+  - button_1_Top
   m_Tag: buttons
   m_IsVariant: 0

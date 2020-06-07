@@ -6,32 +6,22 @@ namespace Sources.Photon
 {
     public class PhotonGameState
     {
-        public Dictionary<int, Player> _playersById;
-        public Dictionary<byte, Player> _playerByColorPattern;
-        public Dictionary<int, bool> _playersReadyById;
-        public Dictionary<int, bool> _loadedGameScenesReadyByPlayerId;
-        public Dictionary<int, byte> _colorsByPlayerId;
+        public readonly Dictionary<int, Player> _playersById = new Dictionary<int, Player>();
+        public readonly Dictionary<byte, Player> _playerByColorPattern = new Dictionary<byte, Player>();
+        public readonly Dictionary<int, bool> _playersReadyById = new Dictionary<int, bool>();
+        public readonly Dictionary<int, byte> _colorsByPlayerId = new Dictionary<int, byte>();
 
-        public List<byte> _availableColors;
+        private readonly Dictionary<int, bool> _loadedGameScenesReadyByPlayerId = new Dictionary<int, bool>();
+        private  readonly List<byte> _availableColors = new List<byte>
+        {
+            GameEventHelper.Blue,
+            GameEventHelper.Red,
+            GameEventHelper.Green,
+            GameEventHelper.Yellow
+        };
 
         private int _currentSelection = 0000000000000000;
         private int _currentSelectionIndex;
-
-        public PhotonGameState()
-        {
-            _playersById = new Dictionary<int, Player>();
-            _colorsByPlayerId = new Dictionary<int, byte>();
-            _playersReadyById = new Dictionary<int, bool>();
-            _playerByColorPattern = new Dictionary<byte, Player>();
-
-            _availableColors = new List<byte>
-            {
-                GameEventHelper.Blue,
-                GameEventHelper.Red,
-                GameEventHelper.Green,
-                GameEventHelper.Yellow
-            };
-        }
 
         public void ResetTurn()
         {
