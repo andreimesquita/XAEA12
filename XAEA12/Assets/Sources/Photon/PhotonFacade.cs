@@ -244,7 +244,7 @@ namespace Sources.Photon
         public void SendButtonPressEvent()
         {
             if (!_isButtonActivated) return;
-            OnButtonActiveStateChanged?.Invoke(false);
+            //OnButtonActiveStateChanged?.Invoke(false);
             _isButtonActivated = false;
             _eventDispatcher.SendEventToMaster(EVENT_CODES.CLIENT_PRESSED_BUTTON, null); 
         }
