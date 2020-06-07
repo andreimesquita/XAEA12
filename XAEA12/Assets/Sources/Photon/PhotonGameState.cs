@@ -7,26 +7,30 @@ namespace Sources.Photon
     public class PhotonGameState
     {
         public Dictionary<int, Player> _playersById;
+        public Dictionary<byte, Player> _playerByColorPattern;
         public Dictionary<int, bool> _playersReadyById;
+        public Dictionary<int, bool> _loadedGameScenesReadyByPlayerId;
         public Dictionary<int, byte> _colorsByPlayerId;
 
         public List<byte> _availableColors;
 
         private int _currentSelection = 0000000000000000;
         private int _currentSelectionIndex;
-        
+
         public PhotonGameState()
         {
             _playersById = new Dictionary<int, Player>();
             _colorsByPlayerId = new Dictionary<int, byte>();
             _playersReadyById = new Dictionary<int, bool>();
-            
-            _availableColors = new List<byte>();
+            _playerByColorPattern = new Dictionary<byte, Player>();
 
-            _availableColors.Add(GameEventHelper.Blue);
-            _availableColors.Add(GameEventHelper.Red);
-            _availableColors.Add(GameEventHelper.Green);
-            _availableColors.Add(GameEventHelper.Yellow);
+            _availableColors = new List<byte>
+            {
+                GameEventHelper.Blue,
+                GameEventHelper.Red,
+                GameEventHelper.Green,
+                GameEventHelper.Yellow
+            };
         }
 
         public void ResetTurn()
@@ -38,6 +42,7 @@ namespace Sources.Photon
         public void ButtonPress(int actorId)
         {
             byte actorColor = _colorsByPlayerId[actorId];
+            _playerByColorPattern[actorColor] = _playersById[actorId];
             _currentSelection = actorColor << (4 * _currentSelectionIndex);
             _currentSelectionIndex++;
         }
@@ -52,13 +57,12 @@ namespace Sources.Photon
         public byte AddPlayer(Player player)
         {
             byte playerColor = GetUnusedColor();
-            
-            _playersById.Add(player.ActorNumber, player);
-            _colorsByPlayerId.Add(player.ActorNumber, playerColor);
+            _playersById[player.ActorNumber] = player;
+            _colorsByPlayerId[player.ActorNumber] = playerColor;
             return playerColor;
         }
 
-        public byte GetUnusedColor()
+        private byte GetUnusedColor()
         {
             byte color = _availableColors.First();
             _availableColors.Remove(color);
@@ -70,9 +74,9 @@ namespace Sources.Photon
             return _playersById.Count == 4;
         }
 
-        public void SetPlayerReady(int actorNumber)
+        public void SetPlayerReady(int actorNumber, bool isReady)
         {
-            _playersReadyById.Add(actorNumber, true);
+            _playersReadyById[actorNumber] = isReady;
         }
 
         public bool AllPlayersReady()
@@ -83,6 +87,20 @@ namespace Sources.Photon
                 {
                     return false;
                 }
+            }
+            return true;
+        }
+
+        public void SetGameSceneReady(int actorNumber)
+        {
+            _loadedGameScenesReadyByPlayerId[actorNumber] = true;
+        }
+
+        public bool AreAllGameScenesLoaded()
+        {
+            foreach (KeyValuePair<int,bool> loadedScenes in _loadedGameScenesReadyByPlayerId)
+            {
+                if (!loadedScenes.Value) return false;
             }
             return true;
         }

@@ -26,7 +26,6 @@ namespace Sources.Common.Pattern
         
         [SerializeField]
         private PatternEntry[] _patterns = default;
-
         [SerializeField]
         private ColorPatternEntry[] _colorPatterns = default;
 
@@ -67,6 +66,11 @@ namespace Sources.Common.Pattern
         public bool IsValidPattern(int pattern)
         {
             return _triggerByPattern.ContainsKey(pattern);
+        }
+
+        public string GetAnimationTriggerByPattern(int pattern)
+        {
+            return _triggerByPattern[pattern];
         }
 
         public Color GetColorByPattern(byte pattern)

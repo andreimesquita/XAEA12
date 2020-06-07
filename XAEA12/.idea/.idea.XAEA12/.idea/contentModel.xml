@@ -510,9 +510,14 @@
             <e p="SoundController.cs" t="Include" />
           </e>
           <e p="Photon" t="Include">
+            <e p="EVENT_CODES.cs" t="Include" />
             <e p="GameEventHelper.cs" t="Include" />
+            <e p="IGameUserInteractions.cs" t="Include" />
+            <e p="ILobbyUserInteractions.cs" t="Include" />
+            <e p="IPhotonFacade.cs" t="Include" />
+            <e p="PhotonEventDispatcher.cs" t="Include" />
+            <e p="PhotonFacade.cs" t="Include" />
             <e p="PhotonGameState.cs" t="Include" />
-            <e p="PhotonServer.cs" t="Include" />
             <e p="PhotonTest.cs" t="Include" />
           </e>
           <e p="Views" t="Include">

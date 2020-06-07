@@ -9,7 +9,7 @@ namespace Sources.Photon
         
         private void Start()
         {
-            PhotonServer.Instance.JoinGame(_userName);
+            PhotonFacade.Instance.Login(_userName);
         }
     }
 }

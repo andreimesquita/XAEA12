@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+﻿using Sources.Photon;
 
 namespace Sources.Common.Pattern
 {
@@ -15,11 +15,20 @@ namespace Sources.Common.Pattern
             return pattern;
         }
 
-        public static Color ToColor(int colorPattern)
+        public static byte IndexToColorPattern(int index)
         {
-            Color color = new Color();
-            //TODO(andrei)
-            return Color.black;
+            if (index == 0) return GameEventHelper.Blue;
+            if (index == 1) return GameEventHelper.Green;
+            if (index == 2) return GameEventHelper.Red;
+            return GameEventHelper.Yellow;
+        }
+
+        public static int GetIndexByColorPattern(int colorPattern)
+        {
+            if (colorPattern == GameEventHelper.Blue) return 0;
+            if (colorPattern == GameEventHelper.Green) return 1;
+            if (colorPattern == GameEventHelper.Red) return 2;
+            return 3;
         }
     }
 }

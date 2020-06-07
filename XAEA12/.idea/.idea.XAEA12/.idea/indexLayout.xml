@@ -22,6 +22,7 @@
     <explicitExcludes>
       <Path>.idea</Path>
       <Path>.vscode</Path>
+      <Path>Builds</Path>
       <Path>Library</Path>
       <Path>Logs</Path>
       <Path>Sources</Path>

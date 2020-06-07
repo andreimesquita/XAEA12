@@ -3,31 +3,35 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class LoginView : MonoBehaviour
+namespace Sources.Views
 {
-    [SerializeField]
-    public TextMeshProUGUI _playerNameInputField;
-    
-    public void OnConfirmButtonPressed()
+    public class LoginView : MonoBehaviour
     {
-        if (string.IsNullOrEmpty(_playerNameInputField.text))
+        [SerializeField]
+        public TextMeshProUGUI _playerNameInputField;
+    
+        public void OnConfirmButtonPressed()
         {
-            Debug.LogError("Sorry burb! No 'null' value or empty spaces allowed!  :)");
-            return;
+            if (string.IsNullOrEmpty(_playerNameInputField.text))
+            {
+                Debug.LogError("Sorry burb! No 'null' value or empty spaces allowed!  :)");
+                return;
+            }
+
+            PhotonFacade server = PhotonFacade.Instance;
+            server.OnLoginMyColorChanged += OnLoginOnLoginMyColorChanged;
+            server.Login(_playerNameInputField.text);
         }
 
-        PhotonServer server = PhotonServer.Instance;
-        server.OnMyColorChanged += OnOnMyColorChanged;
-        server.JoinGame(_playerNameInputField.text);
-    }
+        private void OnLoginOnLoginMyColorChanged(byte myColor)
+        {
+            PhotonFacade.Instance.OnLoginMyColorChanged -= OnLoginOnLoginMyColorChanged;
+            OnSuccessCallback();
+        }
 
-    private void OnOnMyColorChanged(byte myColor)
-    {
-        OnSuccessCallback();
-    }
-
-    private void OnSuccessCallback()
-    {
-        SceneManager.LoadScene("Lobby");
+        private void OnSuccessCallback()
+        {
+            SceneManager.LoadScene("Lobby");
+        }
     }
 }
