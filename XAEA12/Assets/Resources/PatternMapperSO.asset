@@ -49,10 +49,10 @@ MonoBehaviour:
   - AnimationTrigger: '?'
     Pattern: 0100100000010010
     ReadablePattern: 'GREEN BLUE YELLOW RED '
-  - AnimationTrigger: '?'
+  - AnimationTrigger: Jump
     Pattern: 0010000110000100
     ReadablePattern: 'RED YELLOW BLUE GREEN '
-  - AnimationTrigger: Jump
+  - AnimationTrigger: Mini
     Pattern: 0001001010000100
     ReadablePattern: 'RED YELLOW GREEN BLUE '
   - AnimationTrigger: '?'
