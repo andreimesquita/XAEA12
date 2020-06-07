@@ -11,6 +11,8 @@ GameObject:
   - component: {fileID: 8074377732014900744}
   - component: {fileID: 8098750231081688282}
   - component: {fileID: 8092611725207355544}
+  - component: {fileID: 1782024622291667404}
+  - component: {fileID: 5970189901292463627}
   m_Layer: 0
   m_Name: vending_machine
   m_TagString: Untagged
@@ -79,3 +81,29 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+--- !u!136 &1782024622291667404
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8077960367053319032}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  m_Radius: 0.95483434
+  m_Height: 4.0014143
+  m_Direction: 1
+  m_Center: {x: 0.000000029802333, y: 2.0007071, z: 0.000000059604666}
+--- !u!114 &5970189901292463627
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8077960367053319032}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: db61400022953844f91f0ead976a923a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

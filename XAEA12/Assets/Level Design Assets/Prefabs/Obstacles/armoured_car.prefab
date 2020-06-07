@@ -485,8 +485,12 @@ GameObject:
   - component: {fileID: 1025608389389651543}
   - component: {fileID: 1034806768543675115}
   - component: {fileID: 1044792513287332171}
+  - component: {fileID: 2655105957882619007}
+  - component: {fileID: 880349676689008286}
+  - component: {fileID: 1747208670891806534}
+  - component: {fileID: 1619198909655823951}
   m_Layer: 0
-  m_Name: SM_Veh_Armored_Truck_01
+  m_Name: armoured_car
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -561,6 +565,57 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+--- !u!65 &2655105957882619007
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1022120081727181577}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 2.212222, y: 2.218126, z: 3.4049168}
+  m_Center: {x: 0.036511183, y: 1.5510784, z: -0.3613493}
+--- !u!114 &880349676689008286
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1022120081727181577}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: db61400022953844f91f0ead976a923a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!135 &1747208670891806534
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1022120081727181577}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 1.12
+  m_Center: {x: 0, y: 1.05, z: 2.08}
+--- !u!135 &1619198909655823951
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1022120081727181577}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 1.3
+  m_Center: {x: 0, y: 1.43, z: -2.39}
 --- !u!1 &1022193860070594897
 GameObject:
   m_ObjectHideFlags: 0

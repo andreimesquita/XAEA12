@@ -11,6 +11,8 @@ GameObject:
   - component: {fileID: 2587911556273617771}
   - component: {fileID: 2563372777351089995}
   - component: {fileID: 2573481763507825061}
+  - component: {fileID: 5395107244318215674}
+  - component: {fileID: 3200968246752455215}
   m_Layer: 0
   m_Name: street_market
   m_TagString: Untagged
@@ -79,3 +81,28 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+--- !u!65 &5395107244318215674
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2585230684184883423}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 2.1671245, y: 0.88244534, z: 1.0396689}
+  m_Center: {x: -0.019378304, y: 0.5300007, z: 0.00000005976647}
+--- !u!114 &3200968246752455215
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2585230684184883423}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: db61400022953844f91f0ead976a923a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
