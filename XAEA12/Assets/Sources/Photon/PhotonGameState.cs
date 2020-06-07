@@ -36,10 +36,10 @@ namespace Sources.Photon
         {
             Room room = PhotonNetwork.CurrentRoom;
             Player player = room.GetPlayer(actorId);
-            var hashtable = new Hashtable();
+            var hashtable = player.CustomProperties;
             if (!hashtable.TryGetValue(PLAYER_COLOR_FIELD, out object value)) return;
             byte color = (byte) value;
-            _patternMask = color << (4 * _currentPatternMaskIndex);
+            _patternMask |= color << (4 * _currentPatternMaskIndex);
             _currentPatternMaskIndex++;
         }
         
