@@ -537,6 +537,7 @@
             <e p="LobbyView.cs" t="Include" />
             <e p="LoginView.cs" t="Include" />
             <e p="Observer.cs" t="Include" />
+            <e p="SlotView.cs" t="Include" />
           </e>
         </e>
         <e p="TextMesh Pro" t="Include">

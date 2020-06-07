@@ -19,14 +19,12 @@ namespace Sources.Photon
         private readonly PhotonEventDispatcher _eventDispatcher;
         private const int MaxPlayersPerRoom = 4;
         private bool _isMaster;
-        private byte _myColor;
         public readonly PhotonGameState GameState = new PhotonGameState();
-        public bool IsMyColorSet => _myColor != 0;
-        public bool AmIReady => GameState._playersReadyById[PhotonNetwork.LocalPlayer.ActorNumber];
+        public bool AmIReady => GameState.IsPlayerReady(PhotonNetwork.LocalPlayer.ActorNumber);
         
         // UI callbacks
         public event Action OnGamePlayerDead;
-        public event Action<byte> OnLoginMyColorChanged;
+        public event Action OnLoginMyColorChanged;
         /// <summary>
         /// This event ist triggered at the LOBBY when all players are on "player ready" state.
         /// </summary>
@@ -37,6 +35,7 @@ namespace Sources.Photon
         public event Action OnGameTurnStarted;
         public event Action OnLobbyPlayerReadyStateChanged;
         public event Action<bool> OnGameButtonActiveStateChanged;
+        public event Action OnLobbyPlayerListChanged;
         
         private PhotonFacade()
         {
@@ -45,7 +44,6 @@ namespace Sources.Photon
             PhotonNetwork.AddCallbackTarget(this);
             
             // MasterClient
-            _onEventReceive.Add((int) EVENT_CODES.SET_CLIENT_COLOR, OnClientReceiveColorSetEvent);
             _onEventReceive.Add((int) EVENT_CODES.NOTIFY_CLIENT_READY, OnMasterReceivePlayerReadyEvent);
             _onEventReceive.Add((int) EVENT_CODES.CLIENT_PRESSED_BUTTON, OnMasterReceiveButtonPressEvent);
             _onEventReceive.Add((int) EVENT_CODES.LOADED_CLIENT_GAME_SCENE, OnMasterReceiveGameSceneLoadedEvent);
@@ -90,6 +88,21 @@ namespace Sources.Photon
         {
             OnGameTurnStarted?.Invoke();
         }
+        
+        public override void OnPlayerPropertiesUpdate(Player targetPlayer, Hashtable changedProps)
+        {
+            if (changedProps.ContainsKey(PhotonGameState.PLAYER_COLOR_FIELD))
+            {
+                if (targetPlayer.ActorNumber == PhotonNetwork.LocalPlayer.ActorNumber)
+                {
+                    OnLoginMyColorChanged?.Invoke();
+                }
+                else
+                {
+                    OnLobbyPlayerListChanged?.Invoke();
+                }
+            }
+        }
 
         private void OnReceiveGameStartedEvent(EventData photonEvent)
         {
@@ -125,7 +138,7 @@ namespace Sources.Photon
 
         private void OnMasterReceiveGameSceneLoadedEvent(EventData photonEvent)
         {
-            GameState.SetGameSceneReady(photonEvent.Sender);
+            GameState.SetPlayerGameSceneLoaded(photonEvent.Sender);
             if (GameState.AreAllGameScenesLoaded())
             {
                 SendGameStartedEvent();
@@ -135,7 +148,7 @@ namespace Sources.Photon
         private void OnMasterReceiveButtonPressEvent(EventData photonEvent)
         {
             int actorNumber = photonEvent.Sender;
-            GameState.ButtonPress(actorNumber);
+            GameState.OnButtonPress(actorNumber);
 
             if (GameState.ActionComplete())
             {
@@ -151,16 +164,12 @@ namespace Sources.Photon
             }
         }
 
-        private void OnClientReceiveColorSetEvent(EventData photonEvent)
-        {
-            _myColor = (byte) photonEvent.CustomData;
-            OnLoginMyColorChanged?.Invoke(_myColor);
-        }
-
         private void OnMasterReceivePlayerReadyEvent(EventData photonEvent)
         {
-            Debug.Log($"'{GameState._playersById[photonEvent.Sender].UserId}' is ready!");
-            GameState.SetPlayerReady(photonEvent.Sender, true);
+            Room room = PhotonNetwork.CurrentRoom;
+            Player player = room.GetPlayer(photonEvent.Sender);
+            Debug.Log($"'{player.UserId}' is ready!");
+            GameState.SetPlayerReady(photonEvent.Sender);
             OnLobbyPlayerReadyStateChanged?.Invoke();
 
             // Send global event if everyone ready
@@ -170,17 +179,12 @@ namespace Sources.Photon
             }
         }
 
-        private void SendSetColorEvent(int actorId, byte color)
-        {
-            _eventDispatcher.SendEventToPlayer(EVENT_CODES.SET_CLIENT_COLOR, color, actorId); 
-        }
-
 #region LOBBY USER INTERACTIONS        
         
         public void SendPlayerReadyEvent()
         {
             int localUserId = PhotonNetwork.LocalPlayer.ActorNumber;
-            GameState.SetPlayerReady(localUserId, true);
+            GameState.SetPlayerReady(localUserId);
             OnLobbyPlayerReadyStateChanged?.Invoke();
             _eventDispatcher.SendEventToMaster(EVENT_CODES.NOTIFY_CLIENT_READY, null);
         }
@@ -195,7 +199,7 @@ namespace Sources.Photon
         public void SendGameSceneLoadedEvent()
         {
             int localUserId = PhotonNetwork.LocalPlayer.ActorNumber;
-            GameState.SetGameSceneReady(localUserId);
+            GameState.SetPlayerGameSceneLoaded(localUserId);
             _eventDispatcher.SendEventToMaster(EVENT_CODES.LOADED_CLIENT_GAME_SCENE, null);
         }
         
@@ -261,7 +265,7 @@ namespace Sources.Photon
             
             if (PhotonNetwork.IsConnectedAndReady)
             {
-                PhotonNetwork.JoinRandomRoom();
+                JoinRandomRoom();
             }
             else
             {
@@ -272,9 +276,8 @@ namespace Sources.Photon
 
         private void JoinRandomRoom()
         {
-            MatchmakingMode matchmakingMode = MatchmakingMode.FillRoom;
-            TypedLobby lobby = PhotonNetwork.CurrentLobby;
-            PhotonNetwork.JoinRandomRoom(null, MaxPlayersPerRoom, matchmakingMode, lobby, null);
+            var roomOptions = new RoomOptions {PublishUserId = true};
+            PhotonNetwork.JoinOrCreateRoom("XAEA12", roomOptions, TypedLobby.Default);
         }
 
         private void CreateRoom()
@@ -288,14 +291,19 @@ namespace Sources.Photon
 
             if (PhotonNetwork.IsMasterClient)
             {
-                byte playerColor = GameState.AddPlayer(newPlayer);
+                byte playerColor = GameState.GetUnusedColor();
                 Debug.Log($"Player {newPlayer.ActorNumber} color is {playerColor}");
-                SendSetColorEvent( newPlayer.ActorNumber, playerColor);
-                
+                SetPlayerColor(newPlayer, playerColor);
                 if (GameState.RoomIsFilled())
                 {
                     SendRoomIsFilledEvent();
                 }
+            }
+            
+            void SetPlayerColor(Player player, byte color)
+            {
+                var hashtable = new Hashtable {{PhotonGameState.PLAYER_COLOR_FIELD, color}};
+                player.SetCustomProperties(hashtable);
             }
         }
 
@@ -324,10 +332,11 @@ namespace Sources.Photon
             if (PhotonNetwork.IsMasterClient)
             {
                 Debug.Log("Starting game state..");
-                _myColor = GameState.AddPlayer(PhotonNetwork.LocalPlayer);
-                OnLoginMyColorChanged?.Invoke(_myColor);
-                
-                Debug.Log($"My color is {_myColor}");
+                byte color = GameState.GetUnusedColor();
+                Player player = PhotonNetwork.LocalPlayer;
+                var hashtable = new Hashtable {{PhotonGameState.PLAYER_COLOR_FIELD, color}};
+                player.SetCustomProperties(hashtable);
+                Debug.Log($"My color is {color}");
             }
         }
 

@@ -19,7 +19,6 @@ namespace Sources.Photon
             _eventTypeDic = new Dictionary<EVENT_CODES, byte>();
             
             addEventToMap(EVENT_CODES.INVALID);
-            addEventToMap(EVENT_CODES.SET_CLIENT_COLOR);
             addEventToMap(EVENT_CODES.NOTIFY_CLIENT_READY);
             addEventToMap(EVENT_CODES.CLIENT_PRESSED_BUTTON);
             addEventToMap(EVENT_CODES.ROOM_IS_FILLED);

@@ -1,19 +1,16 @@
-﻿using Sources.Photon;
+﻿using System.Collections;
+using Sources.Photon;
 using UnityEngine;
 
 namespace Sources.Views
 {
     public sealed class GameView : MonoBehaviour
     {
-        private void Start()
+        private IEnumerator Start()
         {
+            yield return null;
             IGameUserInteractions photonFacade = PhotonFacade.Instance;
-            EventProxy.Instance.InvokeLater(new WaitForEndOfFrame(), NotifyGameSceneLoaded);
-
-            void NotifyGameSceneLoaded()
-            {
-                photonFacade.SendGameSceneLoadedEvent();
-            }
+            photonFacade.SendGameSceneLoadedEvent();
         }
     }
 }

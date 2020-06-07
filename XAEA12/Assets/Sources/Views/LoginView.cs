@@ -23,7 +23,7 @@ namespace Sources.Views
             server.Login(_playerNameInputField.text);
         }
 
-        private void OnLoginOnLoginMyColorChanged(byte myColor)
+        private void OnLoginOnLoginMyColorChanged()
         {
             PhotonFacade.Instance.OnLoginMyColorChanged -= OnLoginOnLoginMyColorChanged;
             OnSuccessCallback();

@@ -1,17 +1,17 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using ExitGames.Client.Photon;
+using Photon.Pun;
 using Photon.Realtime;
 
 namespace Sources.Photon
 {
     public class PhotonGameState
     {
-        public readonly Dictionary<int, Player> _playersById = new Dictionary<int, Player>();
-        public readonly Dictionary<byte, Player> _playerByColorPattern = new Dictionary<byte, Player>();
-        public readonly Dictionary<int, bool> _playersReadyById = new Dictionary<int, bool>();
-        public readonly Dictionary<int, byte> _colorsByPlayerId = new Dictionary<int, byte>();
-
-        private readonly Dictionary<int, bool> _loadedGameScenesReadyByPlayerId = new Dictionary<int, bool>();
+        public const string PLAYER_COLOR_FIELD = "player_color";
+        
+        private readonly HashSet<int> _playersReady = new HashSet<int>();
+        private readonly HashSet<int> _playersWithLoadedScenes = new HashSet<int>();
         private  readonly List<byte> _availableColors = new List<byte>
         {
             GameEventHelper.Blue,
@@ -20,6 +20,7 @@ namespace Sources.Photon
             GameEventHelper.Yellow
         };
 
+        // MasterClient only data
         private int _currentSelection = 0000000000000000;
         private int _currentSelectionIndex;
 
@@ -29,12 +30,29 @@ namespace Sources.Photon
             _currentSelectionIndex = 0;
         }
         
-        public void ButtonPress(int actorId)
+        public void OnButtonPress(int actorId)
         {
-            byte actorColor = _colorsByPlayerId[actorId];
-            _playerByColorPattern[actorColor] = _playersById[actorId];
-            _currentSelection = actorColor << (4 * _currentSelectionIndex);
+            Room room = PhotonNetwork.CurrentRoom;
+            Player player = room.GetPlayer(actorId);
+            var hashtable = new Hashtable();
+            if (!hashtable.TryGetValue(PLAYER_COLOR_FIELD, out object value)) return;
+            byte color = (byte) value;
+            _currentSelection = color << (4 * _currentSelectionIndex);
             _currentSelectionIndex++;
+        }
+        
+        public bool TryGetPlayerColor(int actorId, out byte color)
+        {
+            Room room = PhotonNetwork.CurrentRoom;
+            Player player = room.GetPlayer(actorId);
+            Hashtable hashtable = player.CustomProperties;
+            if (hashtable.TryGetValue(PLAYER_COLOR_FIELD, out object value))
+            {
+                color = (byte) value;
+                return true;
+            }
+            color = 0;
+            return false;
         }
 
         public int CurrentSelection => _currentSelection;
@@ -44,15 +62,7 @@ namespace Sources.Photon
             return _currentSelectionIndex == 3;
         }
 
-        public byte AddPlayer(Player player)
-        {
-            byte playerColor = GetUnusedColor();
-            _playersById[player.ActorNumber] = player;
-            _colorsByPlayerId[player.ActorNumber] = playerColor;
-            return playerColor;
-        }
-
-        private byte GetUnusedColor()
+        public byte GetUnusedColor()
         {
             byte color = _availableColors.First();
             _availableColors.Remove(color);
@@ -61,38 +71,33 @@ namespace Sources.Photon
         
         public bool RoomIsFilled()
         {
-            return _playersById.Count == 4;
+            Room room = PhotonNetwork.CurrentRoom;
+            return room.PlayerCount == 4;
         }
 
-        public void SetPlayerReady(int actorNumber, bool isReady)
+        public void SetPlayerReady(int actorNumber)
         {
-            _playersReadyById[actorNumber] = isReady;
+            _playersReady.Add(actorNumber);
+        }
+
+        public bool IsPlayerReady(int actorNumber)
+        {
+            return _playersReady.Contains(actorNumber);
         }
 
         public bool AllPlayersReady()
         {
-            foreach (var ready in _playersReadyById)
-            {
-                if (!ready.Value)
-                {
-                    return false;
-                }
-            }
-            return true;
+            return _playersReady.Count == 4;
         }
 
-        public void SetGameSceneReady(int actorNumber)
+        public void SetPlayerGameSceneLoaded(int actorNumber)
         {
-            _loadedGameScenesReadyByPlayerId[actorNumber] = true;
+            _playersWithLoadedScenes.Add(actorNumber);
         }
 
         public bool AreAllGameScenesLoaded()
         {
-            foreach (KeyValuePair<int,bool> loadedScenes in _loadedGameScenesReadyByPlayerId)
-            {
-                if (!loadedScenes.Value) return false;
-            }
-            return true;
+            return _playersWithLoadedScenes.Count == 4;
         }
     }
 }

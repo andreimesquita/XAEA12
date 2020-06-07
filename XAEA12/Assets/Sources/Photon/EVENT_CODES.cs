@@ -3,7 +3,6 @@
     public enum EVENT_CODES
     {
         INVALID = 1,
-        SET_CLIENT_COLOR,
         NOTIFY_CLIENT_READY,
         CLIENT_PRESSED_BUTTON,
         ROOM_IS_FILLED,

@@ -26,7 +26,7 @@ namespace Sources.Photon
             SendEvent(eventCode, content, raiseEventOptions);
         }
 
-        public void SendEventToServer(EVENT_CODES eventCode, Object content) 
+        public void SendEventToServer(EVENT_CODES eventCode, Object content)
         {
             RaiseEventOptions raiseEventOptions = new RaiseEventOptions { Receivers = ReceiverGroup.All };
             SendEvent(eventCode, content, raiseEventOptions);

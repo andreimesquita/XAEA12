@@ -26,7 +26,7 @@ namespace Sources.Photon
         public abstract void OnPlayerEnteredRoom(Player newPlayer);
         public virtual void OnPlayerLeftRoom(Player otherPlayer) { }
         public virtual void OnRoomPropertiesUpdate(Hashtable propertiesThatChanged) {}
-        public virtual void OnPlayerPropertiesUpdate(Player targetPlayer, Hashtable changedProps) {}
+        public abstract void OnPlayerPropertiesUpdate(Player targetPlayer, Hashtable changedProps);
         public virtual void OnMasterClientSwitched(Player newMasterClient) {}
         public abstract void OnEvent(EventData photonEvent);
     }
