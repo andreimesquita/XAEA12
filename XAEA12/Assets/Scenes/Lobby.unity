@@ -250,7 +250,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &73434653
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2399,7 +2399,6 @@ MonoBehaviour:
   _colorPattern: 0001
   _playerName: {fileID: 1292799006}
   _playerButton: {fileID: 2912927896244343216}
-  _tutorialPattern: 
 --- !u!1001 &7725631277542217040
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2598,7 +2597,6 @@ MonoBehaviour:
   _colorPattern: 0100
   _playerName: {fileID: 566460238}
   _playerButton: {fileID: 7725631277542217042}
-  _tutorialPattern: 
 --- !u!1001 &8022723628868595069
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2916,7 +2914,6 @@ MonoBehaviour:
   _colorPattern: 1000
   _playerName: {fileID: 556978089}
   _playerButton: {fileID: 8576266876402052541}
-  _tutorialPattern: 
 --- !u!1001 &9176302447581672189
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3115,4 +3112,3 @@ MonoBehaviour:
   _colorPattern: 0010
   _playerName: {fileID: 983645547}
   _playerButton: {fileID: 9176302447581672191}
-  _tutorialPattern: 
