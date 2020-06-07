@@ -211,11 +211,13 @@ namespace Sources.Photon
         
         public void TrySendPlayerReadyEvent()
         {
-            if (!GameState.IsRoomFilled()) return;
             int localUserId = PhotonNetwork.LocalPlayer.ActorNumber;
-            GameState.SetPlayerReady(localUserId);
-            OnLobbyPlayerReadyStateChanged?.Invoke();
-            _eventDispatcher.SendEventToMaster(EVENT_CODES.NOTIFY_CLIENT_READY, null);
+            if (!GameState.IsPlayerReady(localUserId) && GameState.IsRoomFilled())
+            {
+                GameState.SetPlayerReady(localUserId);
+                OnLobbyPlayerReadyStateChanged?.Invoke();
+                _eventDispatcher.SendEventToMaster(EVENT_CODES.NOTIFY_CLIENT_READY, null);
+            }
         }
 
 #endregion
