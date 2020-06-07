@@ -14,6 +14,8 @@ namespace Sources.Views
         private Animator _characterAnimator;
         [SerializeField]
         public UnityEvent _onSimulationStarted;
+        [SerializeField]
+        private GameObject[] _mainButtons = new GameObject[4];
         
         private IEnumerator Start()
         {
@@ -24,7 +26,7 @@ namespace Sources.Views
             yield return null;
             photonFacade.SendGameSceneLoadedEvent();
         }
-
+        
         private void OnTriggerAnimation(string trigger)
         {
             int hash = Animator.StringToHash(trigger);
