@@ -546,6 +546,9 @@
             <e p="PhotonGameState.cs" t="Include" />
             <e p="PhotonTest.cs" t="Include" />
           </e>
+          <e p="SceneObstacles" t="Include">
+            <e p="DestructibleObject.cs" t="Include" />
+          </e>
           <e p="Views" t="Include">
             <e p="EventProxy.cs" t="Include" />
             <e p="GameButtonView.cs" t="Include" />
