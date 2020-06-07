@@ -4256,7 +4256,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -89.899994, y: -105.8}
+  m_AnchoredPosition: {x: -89.899994, y: -105.79999}
   m_SizeDelta: {x: 179.78113, y: 211.46072}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &376592777
@@ -8054,8 +8054,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6ce68efdfe2648a7a283d7845652b4c0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _playerButton: {fileID: 0}
-  _characterAnimator: {fileID: 0}
+  _characterAnimator: {fileID: 664462168}
   _onSimulationStarted:
     m_PersistentCalls:
       m_Calls: []
@@ -8343,6 +8342,12 @@ PrefabInstance:
 --- !u!54 &664462167 stripped
 Rigidbody:
   m_CorrespondingSourceObject: {fileID: 6616467933945126721, guid: 7512f6060d6287a4c80c26cc7c880273,
+    type: 3}
+  m_PrefabInstance: {fileID: 664462166}
+  m_PrefabAsset: {fileID: 0}
+--- !u!95 &664462168 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 3526987861768507661, guid: 7512f6060d6287a4c80c26cc7c880273,
     type: 3}
   m_PrefabInstance: {fileID: 664462166}
   m_PrefabAsset: {fileID: 0}

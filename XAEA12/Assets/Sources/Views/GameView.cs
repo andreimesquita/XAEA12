@@ -11,8 +11,6 @@ namespace Sources.Views
     public sealed class GameView : MonoBehaviour
     {
         [SerializeField]
-        private Button _playerButton;
-        [SerializeField]
         private Animator _characterAnimator;
         [SerializeField]
         public UnityEvent _onSimulationStarted;
@@ -55,7 +53,7 @@ namespace Sources.Views
 
         private void OnButtonActiveStateChanged(bool isActive)
         {
-            _playerButton.interactable = isActive;
+            //_playerButton.interactable = isActive;
         }
 
         private void OnStartGameSimulation()
