@@ -1,4 +1,5 @@
-﻿using Sources.Common.Pattern;
+﻿using System;
+using Sources.Common.Pattern;
 using Sources.Photon;
 using UnityEngine;
 using UnityEngine.UI;
@@ -15,6 +16,12 @@ namespace Sources.Views
             var photonFacade = PhotonFacade.Instance;
             OnPatternChanged(photonFacade.CurrentPattern);
             photonFacade.OnPatternChanged += OnPatternChanged;
+        }
+
+        private void OnDestroy()
+        {
+            var photonFacade = PhotonFacade.Instance;
+            photonFacade.OnPatternChanged -= OnPatternChanged;
         }
 
         private void OnPatternChanged(int pattern)
