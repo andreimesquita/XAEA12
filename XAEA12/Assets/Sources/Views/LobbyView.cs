@@ -12,8 +12,6 @@ namespace Sources.Views
         private void Start()
         {
             PhotonFacade photonFacade = PhotonFacade.Instance;
-            OnPatternChanged(photonFacade.CurrentPattern);
-            PhotonFacade.Instance.OnPatternChanged += OnPatternChanged;
             photonFacade.OnLobbyAllPlayersReady += OnLobbyAllPlayersReady;
 
             if (photonFacade.GameState.IsRoomFilled())
@@ -26,11 +24,6 @@ namespace Sources.Views
             }
         }
 
-        private void OnPatternChanged(int pattern)
-        {
-            //TODO(andrei) update slot states
-        }
-
         private void OnRoomIsFilledEvent()
         {
             ShowTutorialPattern();
@@ -38,7 +31,8 @@ namespace Sources.Views
 
         private void ShowTutorialPattern()
         {
-            _tutorialPattern.SetActive(true);
+            //TODO(andrei) we are not implementing the tutorial, now
+            _tutorialPattern.SetActive(false);
         }
         
         private void OnLobbyAllPlayersReady()

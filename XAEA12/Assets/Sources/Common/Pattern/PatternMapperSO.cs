@@ -80,7 +80,7 @@ namespace Sources.Common.Pattern
             {
                 return _colorsByPattern[pattern];
             }
-            return Color.magenta;
+            return Color.white;
         }
 
         [ContextMenu("Set Values")]

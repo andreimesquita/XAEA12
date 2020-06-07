@@ -4,6 +4,7 @@ using ExitGames.Client.Photon;
 using Photon.Pun;
 using Photon.Realtime;
 using Sources.Common.Pattern;
+using Sources.Views;
 using UnityEngine;
 
 namespace Sources.Photon
@@ -181,10 +182,20 @@ namespace Sources.Photon
             GameState.SetPlayerReady(photonEvent.Sender);
             OnLobbyPlayerReadyStateChanged?.Invoke();
 
-            // Send global event if everyone ready
+            int actorNumber = photonEvent.Sender;
+            GameState.OnButtonPress(actorNumber);
+            int pattern = GameState.PatternMask;
+            SendPatternChangedEvent(pattern);
+            
             if (GameState.AllPlayersReady())
             {
-                SendAllPlayersReadyEvent();
+                EventProxy.Instance.InvokeLater(new WaitForSeconds(0.8f), SendAllPlayersReadyEvent);
+            }
+
+            void SendAllPlayersReadyEvent()
+            {
+                // Send global event if everyone ready
+                this.SendAllPlayersReadyEvent();
             }
         }
 

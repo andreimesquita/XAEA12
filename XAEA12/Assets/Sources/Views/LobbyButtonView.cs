@@ -18,27 +18,19 @@ namespace Sources.Views
         private TextMeshProUGUI _playerName = default;
         [SerializeField]
         private Button _playerButton = default;
-        [SerializeField]
-        private string _tutorialPattern = "";
         
         private void Start()
         {
             PhotonFacade photonFacade = PhotonFacade.Instance;
             photonFacade.OnLobbyPlayerReadyStateChanged += UpdateSlotState;
             photonFacade.OnLobbyPlayerListChanged += UpdateSlotState;
-            photonFacade.OnPatternChanged += OnPatternChanged;
             photonFacade.OnTriggerAnimation += OnTriggerAnimation;
             UpdateSlotState();
         }
 
-        private void OnPatternChanged(int pattern)
-        {
-            //TODO(andrei) Update pattern on screen
-        }
-
         private void OnTriggerAnimation(string trigger)
         {
-            // We don't need to do this...
+            // nothing to do here, i believe...
         }
         
         public void SendPlayerReadyEvent()
