@@ -492,6 +492,11 @@
           <e p="scroll_texture_add.shader" t="Include" />
         </e>
         <e p="Sources" t="Include">
+          <e p="Audios" t="Include">
+            <e p="BackgroundMusicPlayer.cs" t="Include" />
+            <e p="RandomGroupsSfxPlayer.cs" t="Include" />
+            <e p="SfxPlayer.cs" t="Include" />
+          </e>
           <e p="Common" t="Include">
             <e p="Pattern" t="Include">
               <e p="ColorPatternHelper.cs" t="Include" />
@@ -511,7 +516,6 @@
             <e p="PhotonTest.cs" t="Include" />
           </e>
           <e p="Views" t="Include">
-            <e p="BackgroundMusicPlayer.cs" t="Include" />
             <e p="LobbyView.cs" t="Include" />
             <e p="LoginView.cs" t="Include" />
           </e>

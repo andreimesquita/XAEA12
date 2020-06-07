@@ -23,7 +23,7 @@ public class LoginView : MonoBehaviour
 
     private void OnOnMyColorChanged(byte myColor)
     {
-        throw new System.NotImplementedException();
+        OnSuccessCallback();
     }
 
     private void OnSuccessCallback()
