@@ -1,14 +1,27 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
-[RequireComponent(typeof(Animator))]
+[RequireComponent(typeof(Animator), typeof(Rigidbody))]
 public class PlayerController : MonoBehaviour
 {
     [SerializeField] private Animator _animator;
-
+    [SerializeField] private Rigidbody _rigidbody;
+    [SerializeField] private float _speed;
+    
     private void Awake()
     {
         if (_animator == null)
             _animator = GetComponent<Animator>();
+        if (_rigidbody == null)
+            _rigidbody = GetComponent<Rigidbody>();
+        
+        OnValidate();
+    }
+
+    private void OnValidate()
+    {
+        if (_rigidbody != null)
+            _rigidbody.velocity = transform.forward * _speed;
     }
 
     // Update is called once per frame
