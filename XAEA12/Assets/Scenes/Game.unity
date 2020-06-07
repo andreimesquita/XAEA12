@@ -345,6 +345,16 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 842319182}
     m_Modifications:
+    - target: {fileID: 2946091894427551984, guid: f7e64242beeb46a4d94e975f553fa1d1,
+        type: 3}
+      propertyPath: m_RaycastTarget
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2946091894427551984, guid: f7e64242beeb46a4d94e975f553fa1d1,
+        type: 3}
+      propertyPath: m_Maskable
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2946091894427551987, guid: f7e64242beeb46a4d94e975f553fa1d1,
         type: 3}
       propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.data[1].m_Target
@@ -1917,6 +1927,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
       value: Play
+      objectReference: {fileID: 0}
+    - target: {fileID: 1863756278229969871, guid: e0de0c938f23d1942b70a39ffffa97ed,
+        type: 3}
+      propertyPath: m_RaycastTarget
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1863756278229969871, guid: e0de0c938f23d1942b70a39ffffa97ed,
+        type: 3}
+      propertyPath: m_Maskable
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e0de0c938f23d1942b70a39ffffa97ed, type: 3}
@@ -17203,6 +17223,16 @@ PrefabInstance:
       propertyPath: m_SizeDelta.y
       value: 184
       objectReference: {fileID: 0}
+    - target: {fileID: 8576266874592211684, guid: 45489d1c7d7deb94cbf583bddcab944e,
+        type: 3}
+      propertyPath: m_RaycastTarget
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8576266874592211684, guid: 45489d1c7d7deb94cbf583bddcab944e,
+        type: 3}
+      propertyPath: m_Maskable
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8576266874592211687, guid: 45489d1c7d7deb94cbf583bddcab944e,
         type: 3}
       propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.data[1].m_Target
@@ -19488,6 +19518,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 3923724853245646178, guid: f7a3d46bf2940534395a01019a63523d,
+        type: 3}
+      propertyPath: m_RaycastTarget
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3923724853245646178, guid: f7a3d46bf2940534395a01019a63523d,
+        type: 3}
+      propertyPath: m_Maskable
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3923724853245646188, guid: f7a3d46bf2940534395a01019a63523d,
         type: 3}
