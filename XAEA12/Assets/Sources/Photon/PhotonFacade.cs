@@ -20,7 +20,7 @@ namespace Sources.Photon
         private const int MaxPlayersPerRoom = 4;
         private bool _isMaster;
         private byte _myColor;
-        public PhotonGameState GameState;
+        public readonly PhotonGameState GameState = new PhotonGameState();
         public bool IsMyColorSet => _myColor != 0;
         public bool AmIReady => GameState._playersReadyById[PhotonNetwork.LocalPlayer.ActorNumber];
         
@@ -324,7 +324,6 @@ namespace Sources.Photon
             if (PhotonNetwork.IsMasterClient)
             {
                 Debug.Log("Starting game state..");
-                GameState = new PhotonGameState();
                 _myColor = GameState.AddPlayer(PhotonNetwork.LocalPlayer);
                 OnLoginMyColorChanged?.Invoke(_myColor);
                 
