@@ -15,8 +15,82 @@ MonoBehaviour:
   _patterns:
   - AnimationTrigger: Left
     Pattern: 1000010000100001
+    ReadablePattern: 'BLUE GREEN RED YELLOW '
+  - AnimationTrigger: Fire
+    Pattern: 0100100000100001
+    ReadablePattern: 'BLUE GREEN YELLOW RED '
+  - AnimationTrigger: WaterCannon
+    Pattern: 1000001001000001
+    ReadablePattern: 'BLUE RED GREEN YELLOW '
+  - AnimationTrigger: AnimalGun
+    Pattern: 0010100001000001
+    ReadablePattern: 'BLUE RED YELLOW GREEN '
+  - AnimationTrigger: '?'
+    Pattern: 0100001010000001
+    ReadablePattern: 'BLUE YELLOW GREEN RED '
+  - AnimationTrigger: '?'
+    Pattern: 0010010010000001
+    ReadablePattern: 'BLUE YELLOW RED GREEN '
   - AnimationTrigger: Right
     Pattern: 0001100001000010
-  - AnimationTrigger: Jump
+    ReadablePattern: 'GREEN RED YELLOW BLUE '
+  - AnimationTrigger: Bazooka
+    Pattern: 1000000101000010
+    ReadablePattern: 'GREEN RED BLUE YELLOW '
+  - AnimationTrigger: '?'
+    Pattern: 0001010010000010
+    ReadablePattern: 'GREEN YELLOW RED BLUE '
+  - AnimationTrigger: Jetpack
+    Pattern: 0100000110000010
+    ReadablePattern: 'GREEN YELLOW BLUE RED '
+  - AnimationTrigger: Moonwalk
+    Pattern: 1000010000010010
+    ReadablePattern: 'GREEN BLUE RED YELLOW '
+  - AnimationTrigger: '?'
+    Pattern: 0100100000010010
+    ReadablePattern: 'GREEN BLUE YELLOW RED '
+  - AnimationTrigger: '?'
     Pattern: 0010000110000100
-  _colorPatterns: []
+    ReadablePattern: 'RED YELLOW BLUE GREEN '
+  - AnimationTrigger: Jump
+    Pattern: 0001001010000100
+    ReadablePattern: 'RED YELLOW GREEN BLUE '
+  - AnimationTrigger: '?'
+    Pattern: 0001100000100100
+    ReadablePattern: 'RED GREEN YELLOW BLUE '
+  - AnimationTrigger: 360Jump
+    Pattern: 1000000100100100
+    ReadablePattern: 'RED GREEN BLUE YELLOW '
+  - AnimationTrigger: '?'
+    Pattern: 0010100000010100
+    ReadablePattern: 'RED BLUE YELLOW GREEN '
+  - AnimationTrigger: GiantPopUp
+    Pattern: 1000001000010100
+    ReadablePattern: 'RED BLUE GREEN YELLOW '
+  - AnimationTrigger: Air
+    Pattern: 0100001000011000
+    ReadablePattern: 'YELLOW BLUE GREEN RED '
+  - AnimationTrigger: '?'
+    Pattern: 0010010000011000
+    ReadablePattern: 'YELLOW BLUE RED GREEN '
+  - AnimationTrigger: '?'
+    Pattern: 0100000100101000
+    ReadablePattern: 'YELLOW GREEN BLUE RED '
+  - AnimationTrigger: '?'
+    Pattern: 0001010000101000
+    ReadablePattern: 'YELLOW GREEN RED BLUE '
+  - AnimationTrigger: ChikenSound
+    Pattern: 0001001001001000
+    ReadablePattern: 'YELLOW RED GREEN BLUE '
+  - AnimationTrigger: '?'
+    Pattern: 0010000101001000
+    ReadablePattern: 'YELLOW RED BLUE GREEN '
+  _colorPatterns:
+  - ColorPattern: 0001
+    TargetColor: {r: 1, g: 0, b: 0, a: 1}
+  - ColorPattern: 0010
+    TargetColor: {r: 0, g: 1, b: 0, a: 1}
+  - ColorPattern: 0100
+    TargetColor: {r: 0, g: 0, b: 1, a: 1}
+  - ColorPattern: 1000
+    TargetColor: {r: 1, g: 1, b: 0, a: 1}
