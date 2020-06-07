@@ -24,15 +24,9 @@ namespace Sources.Views
             PhotonFacade photonFacade = PhotonFacade.Instance;
             photonFacade.OnLobbyPlayerReadyStateChanged += UpdateSlotState;
             photonFacade.OnLobbyPlayerListChanged += UpdateSlotState;
-            photonFacade.OnTriggerAnimation += OnTriggerAnimation;
             UpdateSlotState();
         }
 
-        private void OnTriggerAnimation(string trigger)
-        {
-            // nothing to do here, i believe...
-        }
-        
         public void SendPlayerReadyEvent()
         {
             PhotonFacade photonFacade = PhotonFacade.Instance;

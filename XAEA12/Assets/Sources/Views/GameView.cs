@@ -48,6 +48,11 @@ namespace Sources.Views
             _characterAnimator.SetTrigger(hash);
         }
 
+        public void OnButtonPressed()
+        {
+            PhotonFacade.Instance.SendButtonPressEvent();
+        }
+
         private void OnButtonActiveStateChanged(bool isActive)
         {
             _playerButton.interactable = isActive;

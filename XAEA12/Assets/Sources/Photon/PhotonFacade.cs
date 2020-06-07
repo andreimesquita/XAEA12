@@ -41,6 +41,8 @@ namespace Sources.Photon
         public event Action<bool> OnButtonActiveStateChanged;
         public event Action<int> OnPatternChanged;
         public event Action<string> OnTriggerAnimation;
+
+        private bool _isButtonActivated;
         
         private PhotonFacade()
         {
@@ -69,6 +71,7 @@ namespace Sources.Photon
             CurrentPattern = 0;
             OnPatternChanged?.Invoke(CurrentPattern);
             OnButtonActiveStateChanged?.Invoke(true);
+            _isButtonActivated = true;
         }
 
         private void OnReceiveTriggerPatternAnimationEvent(EventData data)
@@ -84,6 +87,7 @@ namespace Sources.Photon
             void ForceResetState()
             {
                 OnButtonActiveStateChanged?.Invoke(true);
+                _isButtonActivated = true;
                 OnPatternChanged?.Invoke(0);
             }
         }
@@ -239,7 +243,9 @@ namespace Sources.Photon
         /// </summary>
         public void SendButtonPressEvent()
         {
+            if (!_isButtonActivated) return;
             OnButtonActiveStateChanged?.Invoke(false);
+            _isButtonActivated = false;
             _eventDispatcher.SendEventToMaster(EVENT_CODES.CLIENT_PRESSED_BUTTON, null); 
         }
 
