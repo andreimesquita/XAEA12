@@ -101,8 +101,6 @@ namespace Sources.Photon
         
         public override void OnEvent(EventData photonEvent)
         {
-            Debug.Log($"Received Event: {photonEvent.Code}, {photonEvent.CustomData}");
-                
             if (_onEventReceive.TryGetValue(photonEvent.Code, out Action<EventData> callback))
             {
                 callback(photonEvent);
@@ -198,10 +196,10 @@ namespace Sources.Photon
             
             if (GameState.AllPlayersReady())
             {
-                EventProxy.Instance.InvokeLater(new WaitForSeconds(0.6f), SendAllPlayersReadyEvent);
+                EventProxy.Instance.InvokeLater(new WaitForSeconds(0.6f), Asd);
             }
 
-            void SendAllPlayersReadyEvent()
+            void Asd()
             {
                 SendPatternResetEvent();
                 // Send global event if everyone ready

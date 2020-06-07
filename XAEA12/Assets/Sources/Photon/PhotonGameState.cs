@@ -14,9 +14,9 @@ namespace Sources.Photon
         private readonly HashSet<int> _playersWithLoadedScenes = new HashSet<int>();
         private  readonly List<byte> _availableColors = new List<byte>
         {
+            GameEventHelper.Green,
             GameEventHelper.Blue,
             GameEventHelper.Red,
-            GameEventHelper.Green,
             GameEventHelper.Yellow
         };
 
@@ -66,8 +66,9 @@ namespace Sources.Photon
 
         public byte GetUnusedColor()
         {
-            byte color = _availableColors.First();
-            _availableColors.Remove(color);
+            int lastIndex = _availableColors.Count - 1;
+            byte color = _availableColors[lastIndex];
+            _availableColors.RemoveAt(lastIndex);
             return color;
         }
         
