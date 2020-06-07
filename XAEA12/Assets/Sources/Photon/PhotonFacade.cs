@@ -165,7 +165,7 @@ namespace Sources.Photon
                 }
                 else
                 {
-                    SendResetPatternEvent();
+                    SendPatternResetEvent();
                 }
             }
             else
@@ -189,13 +189,14 @@ namespace Sources.Photon
             
             if (GameState.AllPlayersReady())
             {
-                EventProxy.Instance.InvokeLater(new WaitForSeconds(0.8f), SendAllPlayersReadyEvent);
+                EventProxy.Instance.InvokeLater(new WaitForSeconds(0.6f), SendAllPlayersReadyEvent);
             }
 
             void SendAllPlayersReadyEvent()
             {
+                SendPatternResetEvent();
                 // Send global event if everyone ready
-                this.SendAllPlayersReadyEvent();
+                SendAllPlayersReadyEvent();
             }
         }
 
@@ -254,7 +255,7 @@ namespace Sources.Photon
             _eventDispatcher.SendEventToServer(EVENT_CODES.ALL_PLAYERS_READY, null);
         }
 
-        private void SendResetPatternEvent()
+        private void SendPatternResetEvent()
         {
             GameState.ResetPatternMask();
             _eventDispatcher.SendEventToServer(EVENT_CODES.PATTERN_RESET, null);

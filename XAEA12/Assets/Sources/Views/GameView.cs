@@ -1,6 +1,9 @@
 ﻿using System.Collections;
+using Photon.Pun;
+using Sources.Common.Pattern;
 using Sources.Photon;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 namespace Sources.Views
@@ -11,19 +14,34 @@ namespace Sources.Views
         private Button _playerButton;
         [SerializeField]
         private Animator _characterAnimator;
-        
+        [SerializeField]
+        public UnityEvent _onSimulationStarted;
+        [SerializeField]
+        private GameObject[] _mainButtons = new GameObject[4];
+
         private IEnumerator Start()
         {
             PhotonFacade photonFacade = PhotonFacade.Instance;
             PhotonFacade.Instance.OnStartGameSimulation += OnStartGameSimulation;
             PhotonFacade.Instance.OnButtonActiveStateChanged += OnButtonActiveStateChanged;
             PhotonFacade.Instance.OnTriggerAnimation += OnTriggerAnimation;
-            OnPatternChanged(photonFacade.CurrentPattern);
-            PhotonFacade.Instance.OnPatternChanged += OnPatternChanged;
+            ActivatePlayerButton();
             yield return null;
             photonFacade.SendGameSceneLoadedEvent();
         }
 
+        private void ActivatePlayerButton()
+        {
+            PhotonFacade photonFacade = PhotonFacade.Instance;
+            photonFacade.GameState.TryGetPlayerColor(PhotonNetwork.LocalPlayer.ActorNumber, out byte color);
+            int playerIndex = ColorPatternHelper.GetIndexByColorPattern(color);
+            for (int i = 0; i < _mainButtons.Length; i++)
+            {
+                bool isPlayerButton = (playerIndex == i);
+                _mainButtons[i].SetActive(isPlayerButton);
+            }
+        }
+        
         private void OnTriggerAnimation(string trigger)
         {
             int hash = Animator.StringToHash(trigger);
@@ -35,16 +53,9 @@ namespace Sources.Views
             _playerButton.interactable = isActive;
         }
 
-        private void OnPatternChanged(int pattern)
-        {
-            //TODO(andrei) update slot states
-        }
-
         private void OnStartGameSimulation()
         {
-            //TODO(andrei) Start game simulation
-            //TODO(andrei) Start character movement
-            //TODO(andrei) players can press buttons
+            _onSimulationStarted.Invoke();
         }
     }
 }

@@ -533,6 +533,7 @@
           </e>
           <e p="Views" t="Include">
             <e p="EventProxy.cs" t="Include" />
+            <e p="GameButtonView.cs" t="Include" />
             <e p="GameView.cs" t="Include" />
             <e p="LobbyButtonView.cs" t="Include" />
             <e p="LobbyPatternView.cs" t="Include" />
