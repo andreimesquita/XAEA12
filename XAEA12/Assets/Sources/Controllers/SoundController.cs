@@ -31,6 +31,7 @@ public class SoundController : MonoBehaviour
 
     public void Stop()
     {
+        _bgMusicSource.time = 0.0f;
         _bgMusicSource.Stop();
     }
 }
