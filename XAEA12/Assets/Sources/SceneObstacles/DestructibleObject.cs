@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-[RequireComponent(typeof(BoxCollider))]
+[RequireComponent(typeof(Collider))]
 public class DestructibleObject : MonoBehaviour
 {
     private void OnTriggerEnter(Collider other1)
