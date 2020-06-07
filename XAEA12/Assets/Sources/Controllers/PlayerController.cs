@@ -27,13 +27,13 @@ public class PlayerController : MonoBehaviour
         else if (Input.GetKeyDown(KeyCode.Alpha4))
             SetCommand("Air");
         else if (Input.GetKeyDown(KeyCode.Alpha5))
-            SetCommand("Fire");
-        else if (Input.GetKeyDown(KeyCode.Alpha6))
             SetCommand("Bazooka");
-        else if (Input.GetKeyDown(KeyCode.Alpha7))
-            SetCommand("Explode");
-        else if (Input.GetKeyDown(KeyCode.Alpha8))
+        else if (Input.GetKeyDown(KeyCode.Alpha6))
             SetCommand("Laser");
+        else if (Input.GetKeyDown(KeyCode.Alpha7))
+            SetCommand("Fire");
+        else if (Input.GetKeyDown(KeyCode.Alpha8))
+            SetCommand("Explode");
         else if (Input.GetKeyDown(KeyCode.Alpha9))
             SetCommand("Water");
         else if (Input.GetKeyDown(KeyCode.Alpha0))
