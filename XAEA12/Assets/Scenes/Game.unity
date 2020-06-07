@@ -8337,6 +8337,11 @@ PrefabInstance:
       propertyPath: _rigidbody
       value: 
       objectReference: {fileID: 664462167}
+    - target: {fileID: 5725372336403890029, guid: 7512f6060d6287a4c80c26cc7c880273,
+        type: 3}
+      propertyPath: _level
+      value: 
+      objectReference: {fileID: 1503072730}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7512f6060d6287a4c80c26cc7c880273, type: 3}
 --- !u!54 &664462167 stripped

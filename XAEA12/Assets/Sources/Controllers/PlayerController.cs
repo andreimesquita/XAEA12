@@ -5,7 +5,9 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     [SerializeField] private Animator _animator;
-
+    [SerializeField] private LevelController _level;
+    
+    
     private void Awake()
     {
         if (_animator == null)
@@ -46,5 +48,10 @@ public class PlayerController : MonoBehaviour
     {
         if (SimulationController.Instance.Initialized)
             _animator.SetTrigger(trigger);
+        
+        if (trigger == "Left")
+            _level.ChangeLaneLeft();
+        else if (trigger == "Right")
+            _level.ChangeLaneRight();
     }
 }
