@@ -60,9 +60,9 @@ SpriteAtlas:
   - button_4_base
   - button_2_top
   - button_4_top
-  - button_1_Top
+  - button_1_base
   - button_3_top
   - button_2_base
-  - button_1_base
+  - button_1_top
   m_Tag: buttons
   m_IsVariant: 0
