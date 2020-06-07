@@ -5,7 +5,7 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     [SerializeField] private Animator _animator;
-    
+
     private void Awake()
     {
         if (_animator == null)
@@ -41,6 +41,7 @@ public class PlayerController : MonoBehaviour
 
     public void SetCommand(string trigger)
     {
-        _animator.SetTrigger(trigger);
+        if (SimulationController.Instance.Initialized)
+            _animator.SetTrigger(trigger);
     }
 }

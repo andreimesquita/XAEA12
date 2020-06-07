@@ -9,7 +9,7 @@ public class LevelController : MonoBehaviour
     [SerializeField] private float _changeLaneTime = 1.0f;
     
     private Transform _transform;
-
+    
     private void Awake()
     {
         _transform = transform;
@@ -18,6 +18,9 @@ public class LevelController : MonoBehaviour
     // Start is called before the first frame update
     private void Update()
     {
+        if (!SimulationController.Instance.Initialized)
+            return;
+        
         _transform.position -= _speed * Time.deltaTime * _transform.forward;
         
         if (Input.GetKeyDown(KeyCode.Alpha1))
@@ -26,13 +29,19 @@ public class LevelController : MonoBehaviour
             ChangeLaneRight();
     }
 
-    private void ChangeLaneLeft()
+    public void ChangeLaneLeft()
     {
+        if (!SimulationController.Instance.Initialized)
+            return;
+        
         StartCoroutine(ChangeLane(1.0f));
     }
 
-    private void ChangeLaneRight()
+    public void ChangeLaneRight()
     {
+        if (!SimulationController.Instance.Initialized)
+            return;
+        
         StartCoroutine(ChangeLane(-1.0f));
     }
 
