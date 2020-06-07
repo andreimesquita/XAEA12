@@ -36,6 +36,7 @@ namespace Sources.Views
         
         private void OnLobbyAllPlayersReady()
         {
+            SoundController.Instance.Stop();
             PhotonFacade photonFacade = PhotonFacade.Instance;
             photonFacade.OnLobbyAllPlayersReady -= OnLobbyAllPlayersReady;
             SceneManager.LoadScene("Game");
