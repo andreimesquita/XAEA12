@@ -145,9 +145,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8fc06f8e0bbe17f4b8447aa790f32c6e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _clips: []
-  _source: {fileID: 0}
-  _randomizePitch: 0
+  _clips:
+  - {fileID: 8300000, guid: 81077eebf2e7c8749a8f6ba1ec4adb1c, type: 3}
+  - {fileID: 8300000, guid: 1224534e3c15bb7429cb513ce7f1096f, type: 3}
+  - {fileID: 8300000, guid: 1cd10d3304631bb4196c2e9b620746b1, type: 3}
+  - {fileID: 8300000, guid: e6b90d63c22308f4ca518821d42676c6, type: 3}
+  _source: {fileID: 3121670801678123150}
+  _randomizePitch: 1
   _pitchRange: 0.1
-  _priorityClips: []
+  _priorityClips:
+  - {fileID: 8300000, guid: 3d7fba346d4246347a8de786d1a97e72, type: 3}
+  - {fileID: 8300000, guid: 93a7b35a4ff2bd6419cf699d120bcc87, type: 3}
+  - {fileID: 8300000, guid: e70e377f0ce66174ea653c02e15dee38, type: 3}
   _priorotyChance: 0.9

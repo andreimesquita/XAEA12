@@ -43,7 +43,7 @@ SpriteAtlas:
     variantMultiplier: 1
     packables:
     - {fileID: 102900000, guid: 6d21b77f2133ed84ba8a1bb95689995d, type: 3}
-    totalSpriteSurfaceArea: 112640
+    totalSpriteSurfaceArea: 128515
     bindAsDefault: 1
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
@@ -54,6 +54,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 045f4eaa08d89aa41a2de610baf9dfc6, type: 3}
   - {fileID: 21300000, guid: 6e3a109bfb3f35d418ced285ffede3d7, type: 3}
   - {fileID: 21300000, guid: 403b1a3c10539a8409dddfc3c9f885f8, type: 3}
+  - {fileID: 21300000, guid: 9ec80bac6ba062844b64a0dddd216584, type: 3}
   - {fileID: 21300000, guid: dc7bb92f46e5b4741a40b6366328e36a, type: 3}
   m_PackedSpriteNamesToIndex:
   - button_3_base
@@ -63,6 +64,7 @@ SpriteAtlas:
   - button_1_base
   - button_3_top
   - button_2_base
-  - button_1_Top
+  - disable_image
+  - button_1_top
   m_Tag: buttons
   m_IsVariant: 0
