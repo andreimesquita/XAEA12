@@ -33,9 +33,9 @@ public class PlayerController : MonoBehaviour
         else if (Input.GetKeyDown(KeyCode.Alpha6))
             SetCommand("Laser");
         else if (Input.GetKeyDown(KeyCode.Alpha7))
-            SetCommand("Fire");
+            SetCommand("Mini");
         else if (Input.GetKeyDown(KeyCode.Alpha8))
-            SetCommand("Explode");
+            SetCommand("360Jump");
         else if (Input.GetKeyDown(KeyCode.Alpha9))
             SetCommand("Water");
         else if (Input.GetKeyDown(KeyCode.Alpha0))
