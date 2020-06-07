@@ -15,15 +15,20 @@ public class SfxPlayer : MonoBehaviour
             _source = GetComponent<AudioSource>();
     }
 
-    public void Play()
+    public virtual void Play()
     {
         int index = Random.Range(0, _clips.Length);
+        AudioClip clip = _clips[index];
+        PlayClip(clip);
+    }
 
+    protected void PlayClip(AudioClip clip)
+    {
         float pitch = 1.0f;
+        
         if (_randomizePitch)
             pitch = Random.Range(1.0f - _pitchRange, 1.0f + _pitchRange);
 
-        AudioClip clip = _clips[index];
         _source.pitch = pitch;
         _source.PlayOneShot(clip);
     }
