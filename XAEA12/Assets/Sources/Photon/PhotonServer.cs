@@ -9,29 +9,35 @@ using Object = System.Object;
 
 namespace Sources.Photon
 {
-    public class PhotonServer : IConnectionCallbacks, ILobbyCallbacks, IInRoomCallbacks, IMatchmakingCallbacks, IDisposable, IOnEventCallback
+    public class PhotonServer : IConnectionCallbacks, ILobbyCallbacks, IInRoomCallbacks, IMatchmakingCallbacks, IOnEventCallback
     {
         private readonly Dictionary<int, Action<EventData>> _onEventReceive = new Dictionary<int, Action<EventData>>();
             
         private readonly GameEventHelper _eventHelper;
-        
         private const int MaxPlayersPerRoom = 4;
-        
         private PhotonGameState _photonGameState;
-
         private bool _isMaster;
-
         private byte _myColor;
+        public bool IsMyColorSet => _myColor != 0;
+
+        private static PhotonServer _instance;
+        public static PhotonServer Instance => _instance ?? (_instance = new PhotonServer());
+
+        // UI callbacks
+        public event Action<byte> OnMyColorChanged;
         
-        public PhotonServer()
+        private PhotonServer()
         {
             _eventHelper = new GameEventHelper();
             PhotonNetwork.AddCallbackTarget(this);
             
+            // MasterClient
             _onEventReceive.Add((int) EVENT_CODES.SET_COLOR, OnReceiveColorSetEvent);
+            _onEventReceive.Add((int) EVENT_CODES.PLAYER_JOINED, OnReceiveColorSetEvent);
             _onEventReceive.Add((int) EVENT_CODES.PLAYER_READY, OnReceivePlayerReadyEvent);
             _onEventReceive.Add((int) EVENT_CODES.PRESS_BUTTON, OnReceiveButtonPressEvent);
-            _onEventReceive.Add((int) EVENT_CODES.PLAYER_JOINED, OnReceiveColorSetEvent);
+            
+            // All Clients
             _onEventReceive.Add((int) EVENT_CODES.ROOM_IS_FILLED, OnReceiveRoomIsFilledEvent);
             _onEventReceive.Add((int) EVENT_CODES.ALL_PLAYERS_READY, OnReceiveAllPlayersReadyEvent);
             _onEventReceive.Add((int) EVENT_CODES.GAME_STARTED, OnReceiveGameStartedEvent);
@@ -40,9 +46,9 @@ namespace Sources.Photon
             _onEventReceive.Add((int) EVENT_CODES.TURN_RESET, OnReceiveTurnResetEvent);
         }
 
-        public void Dispose()
+        ~PhotonServer()
         {
-            PhotonNetwork.RemoveCallbackTarget(this); 
+            PhotonNetwork.RemoveCallbackTarget(this);
         }
 
         public void SendEventToMaster(EVENT_CODES eventCode, Object content)
@@ -65,18 +71,19 @@ namespace Sources.Photon
 
         public void SendEvent(EVENT_CODES eventCode, Object content, RaiseEventOptions raiseEventOptions)
         {
-            SendOptions sendOptions = new SendOptions { Reliability = true };
+            SendOptions sendOptions = new SendOptions { Reliability = true};
             Debug.Log($"Sending Event: {_eventHelper.GetEventCode(eventCode)}, {content}");
             PhotonNetwork.RaiseEvent(_eventHelper.GetEventCode(eventCode), content, raiseEventOptions, sendOptions);
         }
         
         public void OnEvent(EventData photonEvent)
         {
-            if (_eventHelper.GetEventByCode(photonEvent.Code) != EVENT_CODES.INVALID)
+            EVENT_CODES eventCode = _eventHelper.GetEventByCode(photonEvent.Code);
+            if (eventCode != EVENT_CODES.INVALID)
             {
                 Debug.Log($"Received Event: {_eventHelper.GetEventByCode(photonEvent.Code)}, {photonEvent.CustomData}");
                 
-                if (_onEventReceive.TryGetValue(55, out Action<EventData> callback))
+                if (_onEventReceive.TryGetValue((int)eventCode, out Action<EventData> callback))
                 {
                     callback(photonEvent);
                 }
@@ -85,38 +92,44 @@ namespace Sources.Photon
 
         private void OnReceivePlayerJoinedEvent(EventData photonEvent)
         {
-            throw new NotImplementedException();
+            //TODO(andrei)
         }
 
         private void OnReceiveTurnFinishedEvent(EventData photonEvent)
         {
             // Receive action
             int action = (int) photonEvent.CustomData;
+            //TODO(andrei)
         }
 
         private void OnReceiveTurnStartedEvent(EventData photonEvent)
         {
             // Start turn
+            //TODO(andrei)
         }
 
         private void OnReceiveGameStartedEvent(EventData photonEvent)
         {
             // Start the game
+            //TODO(andrei)
         }
 
         private void OnReceiveAllPlayersReadyEvent(EventData photonEvent)
         {
             // Start Game
+            //TODO(andrei)
         }
         
         private void OnReceiveRoomIsFilledEvent(EventData photonEvent)
         {
             // Enable UI to set ready
+            //TODO(andrei)
         }
         
         private void OnReceiveTurnResetEvent(EventData photonEvent)
         {
             // Enable UI to set ready
+            //TODO(andrei)
         }
 
         private void OnReceiveButtonPressEvent(EventData photonEvent)
@@ -138,12 +151,13 @@ namespace Sources.Photon
             }
         }
 
-        public void OnReceiveColorSetEvent(EventData photonEvent)
+        private void OnReceiveColorSetEvent(EventData photonEvent)
         {
             _myColor = (byte) photonEvent.CustomData;
+            OnMyColorChanged?.Invoke(_myColor);
         }
-        
-        public void OnReceivePlayerReadyEvent(EventData photonEvent)
+
+        private void OnReceivePlayerReadyEvent(EventData photonEvent)
         {
             _photonGameState.SetPlayerReady(photonEvent.Sender);
 
@@ -155,7 +169,7 @@ namespace Sources.Photon
             }
         }
 
-        public void SendSetColorEvent(int actorId, byte color)
+        private void SendSetColorEvent(int actorId, byte color)
         {
             SendEventToPlayer(EVENT_CODES.SET_COLOR, color, actorId); 
         } 
@@ -252,7 +266,7 @@ namespace Sources.Photon
 
         public void OnConnected()
         {
-            //Debug.Log("Connected to Photon.");
+            //nothing to do here
         }
 
         private bool IsMasterClient()
@@ -262,7 +276,6 @@ namespace Sources.Photon
 
         public void OnConnectedToMaster()
         {
-
             Debug.Log("Connected to Master.");
             PhotonNetwork.JoinLobby();
         }
@@ -274,12 +287,12 @@ namespace Sources.Photon
 
         public void OnRegionListReceived(RegionHandler regionHandler)
         {
-            //Debug.Log("Region List received....");
+            //nothing to do here
         }
 
         public void OnCustomAuthenticationResponse(Dictionary<string, object> data)
         {
-            throw new System.NotImplementedException();
+            //nothing to do here
         }
         
         public void OnJoinedLobby()
@@ -290,28 +303,27 @@ namespace Sources.Photon
 
         public void OnLeftLobby()
         {
-            throw new System.NotImplementedException();
+            //nothing to do here
         }
 
         public void OnRoomListUpdate(List<RoomInfo> roomList)
         {
-            //Debug.Log("Room List updated, connecting to Random Room.");
-            //Debug.Log($"Available rooms: {roomList.ToString()}");
+            //nothing to do here
         }
         
         public void OnCustomAuthenticationFailed(string debugMessage)
         {
-            throw new System.NotImplementedException();
+            //nothing to do here
         } 
 
         public void OnLobbyStatisticsUpdate(List<TypedLobbyInfo> lobbyStatistics)
         {
-            throw new System.NotImplementedException();
+            //nothing to do here
         }
 
         public void OnCreatedRoom()
         {
-            //Debug.Log("Created Room successfully");
+            //nothing to do here
         }
 
         public void OnCreateRoomFailed(short returnCode, string message)
@@ -351,22 +363,22 @@ namespace Sources.Photon
 
         public void OnRoomPropertiesUpdate(Hashtable propertiesThatChanged)
         {
-            throw new System.NotImplementedException();
+            //nothing to do here
         }
 
         public void OnPlayerPropertiesUpdate(Player targetPlayer, Hashtable changedProps)
         {
-            throw new System.NotImplementedException();
+            //nothing to do here
         }
 
         public void OnMasterClientSwitched(Player newMasterClient)
         {
-            throw new System.NotImplementedException();
+            //nothing to do here
         }
 
         public void OnFriendListUpdate(List<FriendInfo> friendList)
         {
-            throw new System.NotImplementedException();
+            //nothing to do here
         }
     }
 }

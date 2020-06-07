@@ -1,4 +1,6 @@
-﻿namespace Sources.Common.Pattern
+﻿using UnityEngine;
+
+namespace Sources.Common.Pattern
 {
     public static class ColorPatternHelper
     {
@@ -11,6 +13,13 @@
                 pattern |= color << (4 * i);
             }
             return pattern;
+        }
+
+        public static Color ToColor(int colorPattern)
+        {
+            Color color = new Color();
+            //TODO(andrei)
+            return Color.black;
         }
     }
 }

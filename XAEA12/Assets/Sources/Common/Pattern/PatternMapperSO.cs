@@ -14,13 +14,24 @@ namespace Sources.Common.Pattern
             public string Pattern = default;
         }
 
+        [Serializable]
+        private class ColorPatternEntry
+        {
+            public string ColorPattern;
+            public Color TargetColor;
+        }
+
         private static PatternMapperSO _instance;
         public static PatternMapperSO Instance => _instance;
         
         [SerializeField]
         private PatternEntry[] _patterns = default;
 
+        [SerializeField]
+        private ColorPatternEntry[] _colorPatterns = default;
+
         private Dictionary<int, string> _triggerByPattern = default;
+        private Dictionary<int, Color> _colorsByPattern = default;
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSplashScreen)]
         public static void Load()
@@ -41,11 +52,30 @@ namespace Sources.Common.Pattern
                     _triggerByPattern[bitPattern] = patternEntry.AnimationTrigger;
                 }
             }
+            
+            _colorsByPattern = new Dictionary<int, Color>();
+            if (_colorPatterns != null)
+            {
+                foreach (ColorPatternEntry colorPattern in _colorPatterns)
+                {
+                    int bitPattern = Convert.ToInt32(colorPattern.ColorPattern, 2);
+                    _colorsByPattern[bitPattern] = colorPattern.TargetColor;
+                }
+            }
         }
 
         public bool IsValidPattern(int pattern)
         {
             return _triggerByPattern.ContainsKey(pattern);
+        }
+
+        public Color GetColorByPattern(byte pattern)
+        {
+            if (_colorsByPattern.ContainsKey(pattern))
+            {
+                return _colorsByPattern[pattern];
+            }
+            return Color.magenta;
         }
     }
 }
