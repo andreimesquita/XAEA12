@@ -9,14 +9,14 @@ using UnityEngine.UI;
 
 namespace Sources.Views
 {
-    public class LobbyView : MonoBehaviour
+    public sealed class LobbyView : MonoBehaviour
     {
         [SerializeField]
         private TextMeshProUGUI[] _playerNames = new TextMeshProUGUI[4];
         [SerializeField]
         private Button[] _playerButtons = new Button[4];
         
-        private void Awake()
+        private void Start()
         {
             PhotonFacade photonFacade = PhotonFacade.Instance;
             photonFacade.OnLobbyPlayerReadyStateChanged += UpdateButtonsState;

@@ -36,6 +36,7 @@ namespace Sources.Photon
         /// </summary>
         public event Action OnGameTurnStarted;
         public event Action OnLobbyPlayerReadyStateChanged;
+        public event Action<bool> OnGameButtonActiveStateChanged;
         
         private PhotonFacade()
         {
@@ -191,7 +192,7 @@ namespace Sources.Photon
         /// <summary>
         /// This method is meant to be called when the game scene has been loaded and everything is ready to start the game's turn.
         /// </summary>
-        public void SendGameSceneReadyEvent()
+        public void SendGameSceneLoadedEvent()
         {
             int localUserId = PhotonNetwork.LocalPlayer.ActorNumber;
             GameState.SetGameSceneReady(localUserId);
@@ -203,6 +204,7 @@ namespace Sources.Photon
         /// </summary>
         public void SendButtonPressEvent()
         {
+            OnGameButtonActiveStateChanged?.Invoke(false);
             _eventDispatcher.SendEventToMaster(EVENT_CODES.CLIENT_PRESSED_BUTTON, null); 
         }
 

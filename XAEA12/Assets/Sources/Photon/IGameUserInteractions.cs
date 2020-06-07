@@ -3,7 +3,7 @@
     public interface IGameUserInteractions
     {
         void SendButtonPressEvent();
-        void SendGameSceneReadyEvent();
+        void SendGameSceneLoadedEvent();
         void SendCharacterIsDeadEvent();
     }
 }

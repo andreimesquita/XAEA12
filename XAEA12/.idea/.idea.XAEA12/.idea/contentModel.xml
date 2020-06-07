@@ -521,8 +521,11 @@
             <e p="PhotonTest.cs" t="Include" />
           </e>
           <e p="Views" t="Include">
+            <e p="EventProxy.cs" t="Include" />
+            <e p="GameView.cs" t="Include" />
             <e p="LobbyView.cs" t="Include" />
             <e p="LoginView.cs" t="Include" />
+            <e p="Observer.cs" t="Include" />
           </e>
         </e>
         <e p="TextMesh Pro" t="Include">
