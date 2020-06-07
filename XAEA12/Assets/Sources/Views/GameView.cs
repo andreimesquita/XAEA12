@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using Sources.Photon;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 namespace Sources.Views
@@ -11,6 +12,8 @@ namespace Sources.Views
         private Button _playerButton;
         [SerializeField]
         private Animator _characterAnimator;
+        [SerializeField]
+        public UnityEvent _onSimulationStarted;
         
         private IEnumerator Start()
         {
@@ -18,8 +21,6 @@ namespace Sources.Views
             PhotonFacade.Instance.OnStartGameSimulation += OnStartGameSimulation;
             PhotonFacade.Instance.OnButtonActiveStateChanged += OnButtonActiveStateChanged;
             PhotonFacade.Instance.OnTriggerAnimation += OnTriggerAnimation;
-            OnPatternChanged(photonFacade.CurrentPattern);
-            PhotonFacade.Instance.OnPatternChanged += OnPatternChanged;
             yield return null;
             photonFacade.SendGameSceneLoadedEvent();
         }
@@ -35,16 +36,9 @@ namespace Sources.Views
             _playerButton.interactable = isActive;
         }
 
-        private void OnPatternChanged(int pattern)
-        {
-            //TODO(andrei) update slot states
-        }
-
         private void OnStartGameSimulation()
         {
-            //TODO(andrei) Start game simulation
-            //TODO(andrei) Start character movement
-            //TODO(andrei) players can press buttons
+            _onSimulationStarted.Invoke();
         }
     }
 }
