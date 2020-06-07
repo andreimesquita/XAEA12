@@ -77,6 +77,15 @@ namespace Sources.Photon
             OnPatternChanged?.Invoke(CurrentPattern);
             string trigger = PatternMapperSO.Instance.GetAnimationTriggerByPattern(CurrentPattern);
             OnTriggerAnimation?.Invoke(trigger);
+            YieldInstruction instruction = PhotonNetwork.LocalPlayer.IsMasterClient ? new WaitForSeconds(.8f) : new WaitForSeconds(1f);
+            EventProxy.Instance.InvokeLater(instruction, ForceResetState);
+            GameState.ResetPatternMask();
+
+            void ForceResetState()
+            {
+                OnButtonActiveStateChanged?.Invoke(true);
+                OnPatternChanged?.Invoke(0);
+            }
         }
         
         private void OnReceivePatternChangedEvent(EventData data)
@@ -269,7 +278,7 @@ namespace Sources.Photon
 
         private void SendTriggerPatternAnimation(int pattern)
         {
-            _eventDispatcher.SendEventToServer(EVENT_CODES.PATTERN_CHANGED, pattern);
+            _eventDispatcher.SendEventToServer(EVENT_CODES.PATTERN_TRIGGER_ANIMATION, pattern);
         }
         
         private void SendPatternChangedEvent(int pattern)
