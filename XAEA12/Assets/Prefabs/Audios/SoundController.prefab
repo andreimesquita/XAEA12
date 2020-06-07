@@ -45,7 +45,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _bgMusicSource: {fileID: 3687282336623702515}
-  _sfxSource: {fileID: 0}
 --- !u!82 &3687282336623702515
 AudioSource:
   m_ObjectHideFlags: 0
@@ -58,7 +57,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 0
-  m_Volume: 1
+  m_Volume: 0.3
   m_Pitch: 1
   Loop: 1
   Mute: 0
