@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Sources.Photon
 {
@@ -10,8 +9,7 @@ namespace Sources.Photon
         
         private void Start()
         {
-            PhotonServer launcher = new PhotonServer();
-            launcher.JoinGame(_userName);
+            PhotonServer.Instance.JoinGame(_userName);
         }
     }
 }

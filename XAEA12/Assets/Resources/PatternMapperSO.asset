@@ -12,4 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 219840d7ace24b2429c5d950c663382f, type: 3}
   m_Name: PatternMapperSO
   m_EditorClassIdentifier: 
-  _patterns: []
+  _patterns:
+  - AnimationTrigger: Left
+    Pattern: 1000010000100001
+  - AnimationTrigger: Right
+    Pattern: 0001100001000010
+  - AnimationTrigger: Jump
+    Pattern: 0010000110000100
+  _colorPatterns: []
