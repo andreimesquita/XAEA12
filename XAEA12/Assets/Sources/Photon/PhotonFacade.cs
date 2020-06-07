@@ -21,6 +21,7 @@ namespace Sources.Photon
         private bool _isMaster;
         public readonly PhotonGameState GameState = new PhotonGameState();
         public bool AmIReady => GameState.IsPlayerReady(PhotonNetwork.LocalPlayer.ActorNumber);
+        public int CurrentPattern { get; private set; }
         
         // UI callbacks
         public event Action OnGamePlayerDead;
@@ -32,10 +33,13 @@ namespace Sources.Photon
         /// <summary>
         /// This event is triggered at the GAME scene when all game scenes are loaded and the game's simulation is ready to be started.
         /// </summary>
-        public event Action OnGameTurnStarted;
         public event Action OnLobbyPlayerReadyStateChanged;
-        public event Action<bool> OnGameButtonActiveStateChanged;
         public event Action OnLobbyPlayerListChanged;
+        public event Action OnRoomIsFilledEvent;
+        public event Action OnStartGameSimulation;
+        public event Action<bool> OnButtonActiveStateChanged;
+        public event Action<int> OnPatternChanged;
+        public event Action<string> OnTriggerAnimation;
         
         private PhotonFacade()
         {
@@ -53,9 +57,31 @@ namespace Sources.Photon
             _onEventReceive.Add((int) EVENT_CODES.ROOM_IS_FILLED, OnReceiveRoomIsFilledEvent);
             _onEventReceive.Add((int) EVENT_CODES.ALL_PLAYERS_READY, OnReceiveAllPlayersReadyEvent);
             _onEventReceive.Add((int) EVENT_CODES.GAME_STARTED, OnReceiveGameStartedEvent);
-            _onEventReceive.Add((int) EVENT_CODES.TURN_STARTED, OnReceiveTurnStartedEvent);
-            _onEventReceive.Add((int) EVENT_CODES.TURN_FINISHED, OnReceiveTurnFinishedEvent);
-            _onEventReceive.Add((int) EVENT_CODES.TURN_RESET, OnReceiveTurnResetEvent);
+            
+            _onEventReceive.Add((int) EVENT_CODES.PATTERN_RESET, OnReceivePatternResetEvent);
+            _onEventReceive.Add((int) EVENT_CODES.PATTERN_CHANGED, OnReceivePatternChangedEvent);
+            _onEventReceive.Add((int) EVENT_CODES.PATTERN_TRIGGER_ANIMATION, OnReceiveTriggerPatternAnimationEvent);
+        }
+
+        private void OnReceivePatternResetEvent(EventData data)
+        {
+            CurrentPattern = 0;
+            OnPatternChanged?.Invoke(CurrentPattern);
+            OnButtonActiveStateChanged?.Invoke(true);
+        }
+
+        private void OnReceiveTriggerPatternAnimationEvent(EventData data)
+        {
+            CurrentPattern = (int) data.CustomData;
+            OnPatternChanged?.Invoke(CurrentPattern);
+            string trigger = PatternMapperSO.Instance.GetAnimationTriggerByPattern(CurrentPattern);
+            OnTriggerAnimation?.Invoke(trigger);
+        }
+        
+        private void OnReceivePatternChangedEvent(EventData data)
+        {
+            CurrentPattern = (int) data.CustomData;
+            OnPatternChanged?.Invoke(CurrentPattern);
         }
 
         ~PhotonFacade()
@@ -65,28 +91,12 @@ namespace Sources.Photon
         
         public override void OnEvent(EventData photonEvent)
         {
-            EVENT_CODES eventCode = _eventHelper.GetEventByCode(photonEvent.Code);
-            if (eventCode != EVENT_CODES.INVALID)
-            {
-                Debug.Log($"Received Event: {_eventHelper.GetEventByCode(photonEvent.Code)}, {photonEvent.CustomData}");
+            Debug.Log($"Received Event: {photonEvent.Code}, {photonEvent.CustomData}");
                 
-                if (_onEventReceive.TryGetValue((int)eventCode, out Action<EventData> callback))
-                {
-                    callback(photonEvent);
-                }
+            if (_onEventReceive.TryGetValue(photonEvent.Code, out Action<EventData> callback))
+            {
+                callback(photonEvent);
             }
-        }
-
-        private void OnReceiveTurnFinishedEvent(EventData photonEvent)
-        {
-            // Receive action
-            int action = (int) photonEvent.CustomData;
-            //TODO(andrei)
-        }
-
-        private void OnReceiveTurnStartedEvent(EventData photonEvent)
-        {
-            OnGameTurnStarted?.Invoke();
         }
         
         public override void OnPlayerPropertiesUpdate(Player targetPlayer, Hashtable changedProps)
@@ -107,19 +117,20 @@ namespace Sources.Photon
         private void OnReceiveGameStartedEvent(EventData photonEvent)
         {
             // All game scenes are loaded - We can start the game
-            //TODO(andrei)
+            OnStartGameSimulation?.Invoke();
         }
 
         private void OnReceiveAllPlayersReadyEvent(EventData photonEvent)
         {
-            // Start Game
+            // Load game scene for all players
             OnLobbyAllPlayersReady?.Invoke();
         }
         
         private void OnReceiveRoomIsFilledEvent(EventData photonEvent)
         {
             // Enable UI to set ready
-            //TODO(andrei)
+            GameState.SetRoomFilled();
+            OnRoomIsFilledEvent?.Invoke();
         }
 
         /// <summary>
@@ -130,12 +141,6 @@ namespace Sources.Photon
             OnGamePlayerDead?.Invoke();
         }
         
-        private void OnReceiveTurnResetEvent(EventData photonEvent)
-        {
-            // Enable UI to set ready
-            //TODO(andrei)
-        }
-
         private void OnMasterReceiveGameSceneLoadedEvent(EventData photonEvent)
         {
             GameState.SetPlayerGameSceneLoaded(photonEvent.Sender);
@@ -150,17 +155,21 @@ namespace Sources.Photon
             int actorNumber = photonEvent.Sender;
             GameState.OnButtonPress(actorNumber);
 
+            int pattern = GameState.PatternMask;
             if (GameState.ActionComplete())
             {
-                int action = GameState.CurrentSelection;
-                if (PatternMapperSO.Instance.IsValidPattern(action))
+                if (PatternMapperSO.Instance.IsValidPattern(pattern))
                 {
-                    SendTurnFinishedEvent(action);
+                    SendTriggerPatternAnimation(pattern);
                 }
                 else
                 {
-                    SendTurnResetEvent();
+                    SendResetPatternEvent();
                 }
+            }
+            else
+            {
+                SendPatternChangedEvent(pattern);
             }
         }
 
@@ -181,8 +190,9 @@ namespace Sources.Photon
 
 #region LOBBY USER INTERACTIONS        
         
-        public void SendPlayerReadyEvent()
+        public void TrySendPlayerReadyEvent()
         {
+            if (!GameState.IsRoomFilled()) return;
             int localUserId = PhotonNetwork.LocalPlayer.ActorNumber;
             GameState.SetPlayerReady(localUserId);
             OnLobbyPlayerReadyStateChanged?.Invoke();
@@ -208,7 +218,7 @@ namespace Sources.Photon
         /// </summary>
         public void SendButtonPressEvent()
         {
-            OnGameButtonActiveStateChanged?.Invoke(false);
+            OnButtonActiveStateChanged?.Invoke(false);
             _eventDispatcher.SendEventToMaster(EVENT_CODES.CLIENT_PRESSED_BUTTON, null); 
         }
 
@@ -233,26 +243,26 @@ namespace Sources.Photon
             _eventDispatcher.SendEventToServer(EVENT_CODES.ALL_PLAYERS_READY, null);
         }
 
-        private void SendTurnStartedEvent()
+        private void SendResetPatternEvent()
         {
-            GameState.ResetTurn();
-            _eventDispatcher.SendEventToServer(EVENT_CODES.TURN_STARTED, null);
+            GameState.ResetPatternMask();
+            _eventDispatcher.SendEventToServer(EVENT_CODES.PATTERN_RESET, null);
         }
 
         private void SendGameStartedEvent()
         {
-            GameState.ResetTurn();
+            GameState.ResetPatternMask();
             _eventDispatcher.SendEventToServer(EVENT_CODES.GAME_STARTED, null);
         }
 
-        private void SendTurnFinishedEvent(int action)
+        private void SendTriggerPatternAnimation(int pattern)
         {
-            _eventDispatcher.SendEventToServer(EVENT_CODES.TURN_FINISHED, action);
+            _eventDispatcher.SendEventToServer(EVENT_CODES.PATTERN_CHANGED, pattern);
         }
-
-        private void SendTurnResetEvent()
+        
+        private void SendPatternChangedEvent(int pattern)
         {
-            _eventDispatcher.SendEventToServer(EVENT_CODES.TURN_RESET, null);
+            _eventDispatcher.SendEventToServer(EVENT_CODES.PATTERN_CHANGED, pattern);
         }
 
         public void Login(string userName)

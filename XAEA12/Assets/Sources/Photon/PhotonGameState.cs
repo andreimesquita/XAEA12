@@ -20,14 +20,16 @@ namespace Sources.Photon
             GameEventHelper.Yellow
         };
 
+        private bool _isRoomFilled;
+        
         // MasterClient only data
-        private int _currentSelection = 0000000000000000;
-        private int _currentSelectionIndex;
+        private int _patternMask = 0000000000000000;
+        private int _currentPatternMaskIndex;
 
-        public void ResetTurn()
+        public void ResetPatternMask()
         {
-            _currentSelection = 0000000000000000;
-            _currentSelectionIndex = 0;
+            _patternMask = 0000000000000000;
+            _currentPatternMaskIndex = 0;
         }
         
         public void OnButtonPress(int actorId)
@@ -37,8 +39,8 @@ namespace Sources.Photon
             var hashtable = new Hashtable();
             if (!hashtable.TryGetValue(PLAYER_COLOR_FIELD, out object value)) return;
             byte color = (byte) value;
-            _currentSelection = color << (4 * _currentSelectionIndex);
-            _currentSelectionIndex++;
+            _patternMask = color << (4 * _currentPatternMaskIndex);
+            _currentPatternMaskIndex++;
         }
         
         public bool TryGetPlayerColor(int actorId, out byte color)
@@ -55,11 +57,11 @@ namespace Sources.Photon
             return false;
         }
 
-        public int CurrentSelection => _currentSelection;
+        public int PatternMask => _patternMask;
 
         public bool ActionComplete()
         {
-            return _currentSelectionIndex == 3;
+            return _currentPatternMaskIndex == 3;
         }
 
         public byte GetUnusedColor()
@@ -98,6 +100,16 @@ namespace Sources.Photon
         public bool AreAllGameScenesLoaded()
         {
             return _playersWithLoadedScenes.Count == 4;
+        }
+
+        public bool IsRoomFilled()
+        {
+            return _isRoomFilled;
+        }
+        
+        public void SetRoomFilled()
+        {
+            _isRoomFilled = true;
         }
     }
 }

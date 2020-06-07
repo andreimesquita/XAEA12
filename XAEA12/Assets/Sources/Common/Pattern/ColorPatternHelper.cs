@@ -4,7 +4,7 @@ namespace Sources.Common.Pattern
 {
     public static class ColorPatternHelper
     {
-        public static int ToPattern(int[] colorPatterns)
+        public static int ToFilledPattern(int[] colorPatterns)
         {
             int pattern = 0;
             for (int i = 0; i < colorPatterns.Length; i++)
@@ -13,6 +13,12 @@ namespace Sources.Common.Pattern
                 pattern |= color << (4 * i);
             }
             return pattern;
+        }
+
+        public static byte ToSinglePattern(int pattern, int index)
+        {
+            byte singlePattern = (byte) ((pattern >> (4 * index)) & 15);
+            return singlePattern;
         }
 
         public static byte IndexToColorPattern(int index)

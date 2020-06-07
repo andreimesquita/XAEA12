@@ -2,6 +2,6 @@
 {
     public interface ILobbyUserInteractions
     {
-        void SendPlayerReadyEvent();
+        void TrySendPlayerReadyEvent();
     }
 }
