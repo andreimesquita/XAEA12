@@ -31,8 +31,7 @@ namespace Sources.Views
 
         private void ShowTutorialPattern()
         {
-            //TODO(andrei) we are not implementing the tutorial, now
-            _tutorialPattern.SetActive(false);
+            _tutorialPattern.SetActive(true);
         }
         
         private void OnLobbyAllPlayersReady()
