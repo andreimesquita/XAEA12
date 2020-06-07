@@ -40,7 +40,7 @@ MonoBehaviour:
   - AnimationTrigger: '?'
     Pattern: 0001010010000010
     ReadablePattern: 'GREEN YELLOW RED BLUE '
-  - AnimationTrigger: Jetpack
+  - AnimationTrigger: Laser
     Pattern: 0100000110000010
     ReadablePattern: 'GREEN YELLOW BLUE RED '
   - AnimationTrigger: Moonwalk
