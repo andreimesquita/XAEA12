@@ -1,4 +1,4 @@
-﻿using System;
+﻿using Sources.Photon;
 using UnityEngine;
 
 [RequireComponent(typeof(Animator), typeof(Rigidbody))]
@@ -10,6 +10,9 @@ public class PlayerController : MonoBehaviour
     {
         if (_animator == null)
             _animator = GetComponent<Animator>();
+        
+        PhotonFacade photonFacade = PhotonFacade.Instance;
+        photonFacade.OnTriggerAnimation += SetCommand;
     }
 
     // Update is called once per frame
